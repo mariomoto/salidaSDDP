@@ -1,10 +1,10 @@
 {
-    "file_root": "C:\\Users\\mamaro\\OneDrive - Colbun S.A\\Gerencia de Planificación - General\\Chile\\SDDP\\2025\\2025-10Xrh",
+    "file_root": "C:\\Users\\mamaro\\OneDrive - Colbun S.A\\Gerencia de Planificación - General\\Chile\\SDDP\\2025\\2025-10Srhb",
     "bus_list": ["CrucEnc220", "DEduardo500", "PAzucar220", "Polpaico220", "Charrua220", "PMontt220"],
     "gen_list": ["EOL.HORIZONN", "CAR.SMARIA", "GNL.Nehuenc1"],
     "Gx_Flag": true,
-    "MgC_Flag": true,
-    "cinte_Flag": true,
+    "MgC_Flag": false,
+    "cinte_Flag": false,
 	"MB_Flag": false,
 	"YB_Flag": false,
 	"YH_Flag": false,
