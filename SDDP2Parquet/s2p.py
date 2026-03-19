@@ -1,10 +1,20 @@
 from pathlib import Path
 from collections import namedtuple
-from typing import List
+from typing import List, NamedTuple
 import psr.cloud
+import psr.cloud.status
 import time
 
-SDDPCase = namedtuple("SDDPCase", ["casename", "pathname", "parent", "input_files", "output_files"])
+class SDDPCase(NamedTuple):
+    casename: str
+    pathname: str
+    parent: str | None
+    input_files: str
+    output_files: str
+    
+    def __str__(self):
+        result = [str(item) for item in self]
+        return ",".join(result)
 
 class SDDPCasesList(List[SDDPCase]):
     def __init__(self):
@@ -36,7 +46,7 @@ class SDDPStudyCase(psr.cloud.Case):
                       )
         print(f"{__name__}: Study '{self.sddp_case.casename}' created.")
 
-    def run_study(self) -> psr.cloud.status:
+    def run_study(self):
         status = None
         try:
             self.case_id = self.client.run_case(self)

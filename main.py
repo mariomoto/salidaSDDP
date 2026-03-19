@@ -12,7 +12,7 @@ for sddp_case in sddp_cases_list:
     print(sddp_case)
     study_case = s2p.SDDPStudyCase(client, sddp_case)
     study_case.run_study()
-    f.write(",".join(list(map(str, sddp_case))) + "," + str(study_case.case_id) + "\n")
+    f.write(str(sddp_case) + "," + str(study_case.case_id) + "\n")
     study_case.download_files()
 
 f.close()
