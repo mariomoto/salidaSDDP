@@ -34,9 +34,10 @@ class SDDPStudyCase(psr.cloud.Case):
                       number_of_processes=64,
                       memory_per_process_ratio="2:1"
                       )
-        print(f"{__name__}: Study {self.sddp_case.casename} created.")
+        print(f"{__name__}: Study '{self.sddp_case.casename}' created.")
 
-    def run_study(self):
+    def run_study(self) -> psr.cloud.status:
+        status = None
         try:
             self.case_id = self.client.run_case(self)
             status, status_msg = self.client.get_status(self.case_id)
@@ -51,7 +52,12 @@ class SDDPStudyCase(psr.cloud.Case):
                     previous_status = status
         except psr.cloud.CloudInputError as e:
             print(f"Error running case: {e}")
-        else:
+        finally:
+            return status
+
+    def download_files(self):
+        if (self.case_id):
+            status, status_msg = self.client.get_status(self.case_id)
             if str(status) == "ExecutionStatus.SUCCESS":
                 output_files = self.sddp_case.output_files
                 output_files = [f"{name}.{ext}" for name in output_files.split(';') for ext in ['hdr', 'bin']]
