@@ -1,13 +1,13 @@
 from collections import namedtuple
 from typing import NamedTuple
 
-class SDDPCase(NamedTuple):
+class SDDPCommand(NamedTuple):
+    command: str
     casename: str
     pathname: str
-    parent: str | None
-    input_files: str
-    output_files: str
+    parent_id: str | None
     id: int
+    output_files: str
     
     def __str__(self):
         result = [str(item) for item in self]

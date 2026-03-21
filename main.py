@@ -1,39 +1,33 @@
 import SDDPTools.SDDPCloud as sc
-import SDDPTools.BinToParquet as b2c
+import SDDPTools.SDDPParquet as sp
+from SDDPTools.SDDPCommand import SDDPCommand
 import psr.cloud
 
-def upload_run_and_download():
+def run(sddp_command: SDDPCommand):
     client = psr.cloud.Client()
 
-    sddp_cases_output_list = sc.SDDPCasesInputList()
+    study_case = sc.SDDPStudyCase(client, sddp_command)
+    study_case.run_study()
 
-    f = open('scOut.csv', "w", encoding='utf-8')
-    f.write("name,path,parent,input_files,output_files,id\n")
 
-    for sddp_case in sddp_cases_output_list:
-        print(sddp_case)
-        study_case = sc.SDDPStudyCase(client, sddp_case)
-        study_case.upload_study()
-        study_case.run_study()
-        f.write(str(sddp_case) + "," + str(study_case.sddp_case.id) + "\n")
-        study_case.download_files()
-
-    f.close()
-
-def download():
+def download(sddp_command: SDDPCommand):
     client = psr.cloud.Client()
 
-    sddp_cases_output_list = sc.SDDPCasesOutputList()
+    study_case = sc.SDDPStudyCase(client, sddp_command)
+    study_case.download_files()
 
-    for sddp_case in sddp_cases_output_list:
-        study_case = sc.SDDPStudyCase(client, sddp_case)
-        study_case.download_files()
+def parquet(sddp_command: SDDPCommand):
 
-def to_parquet():
-    sddp_cases_output_list = sc.SDDPCasesOutputList()
+    study_case = sp.SDDPParquet(sddp_command)
+    study_case.ger_bin_to_parquet()
 
-    for sddp_case in sddp_cases_output_list:
-        study_case = b2c.Bin2Parquet(sddp_case)
-        study_case.hid_bin_to_parquet()
+sddp_commands_list = sc.SDDPCommandsList()
 
-to_parquet()
+for sddp_command in sddp_commands_list:
+    match sddp_command.command:
+        case "Run":
+            run(sddp_command)
+        case "Download":
+            download(sddp_command)
+        case "Parquet":
+            parquet(sddp_command)
