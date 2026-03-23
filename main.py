@@ -1,7 +1,8 @@
 import SDDPTools.SDDPCloud as sc
 import SDDPTools.SDDPParquet as sp
-from SDDPTools.SDDPCommand import SDDPCommand
+from SDDPTools.Parameters import SDDPCommand
 import psr.cloud
+
 
 def run(sddp_command: SDDPCommand):
     client = psr.cloud.Client()
@@ -16,10 +17,12 @@ def download(sddp_command: SDDPCommand):
     study_case = sc.SDDPStudyCase(client, sddp_command)
     study_case.download_files()
 
+
 def parquet(sddp_command: SDDPCommand):
 
     study_case = sp.SDDPParquet(sddp_command)
     study_case.ger_bin_to_parquet()
+
 
 sddp_commands_list = sc.SDDPCommandsList()
 

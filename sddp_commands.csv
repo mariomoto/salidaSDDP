@@ -1,4 +1,12 @@
 command,pathname,parent_id,id,output_files
-,C:\Users\mamaro\OneDrive - Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Brh,214859,,
-Download,C:\Users\mamaro\OneDrive - Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Brh,,214876,cmgbus;gerhid;gerter
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Brh,,214876,cmgbus;gerhid;gerter
+NRun,C:\Users\mamaro\OneDrive - Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Brh,,,
+NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Brh,,214876,cmgbus;gerhid;gerter;gergnd
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Brh,,,cmgbus;gerhid;gerter;gergnd
+NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frb_B000,,,
+NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B000,214907,,
+NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B000,,214908,cmgbus;gerhid;gerter;gergnd;gerbat
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B000,,,cmgbus;gerhid
+NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frb_B120Bat,,,
+NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B120Bat,214919,,
+NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B120Bat,,214922,cmgbus;gerhid;gerter;gergnd;gerbat
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B120Bat,,,
