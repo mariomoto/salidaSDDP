@@ -9,4 +9,12 @@ NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\202
 NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frb_B120Bat,,,
 NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B120Bat,214919,,
 NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B120Bat,,214922,cmgbus;gerhid;gerter;gergnd;gerbat
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B120Bat,,,
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_B120Bat,,,
+NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frb_120,,,
+NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frb_120,,214981,cmgbus;gerhid;gerter;gergnd;gerbat
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frb_120,,,cmgbus;gerhid;gerter;gergnd;gerbat
+NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_120,214981,,
+Download,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_120,,214984,cmgbus;gerhid;gerter;gergnd;gerbat
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_120,,,cmgbus;gerhid;gerter;gergnd;gerbat
+NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_Bat120,,214922,cmgbus;gerhid;gerter;gergnd;gerbat
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_Bat120,,,cmgbus;gerhid;gerter;gergnd;gerbat

@@ -51,16 +51,23 @@ class SDDPParquet:
                     )
 
             df_p_agents = self.get_df_p_agents(tech)
-            df_p_agents.columns = [
-                self.dict_paths_plants[pathname][name].plant_code
-                for name in df_p_agents.columns.to_list()
-            ]
             parquet_pathname = os.path.join(
                 self.sddp_command.pathname, tech + ".parquet"
             )
             df_p_agents.to_parquet(parquet_pathname)
-        keys = list({key.bus_name for key in self.dict_paths_plants[pathname].values()})
-        print(keys)
+        plants_pathname = os.path.join(
+            self.sddp_command.pathname, "plants" + ".csv"
+        )
+        with open(plants_pathname, "w", encoding="utf-8") as f:
+            print("genName,genCode,busName,busCode", file=f)
+            for gen in self.dict_paths_plants[pathname]:
+                print(gen, *self.dict_paths_plants[pathname][gen], sep=',', file=f)
+
+        df_p_bus_agents = self.get_df_p_bus_agents()
+        parquet_pathname = os.path.join(
+            self.sddp_command.pathname, 'cmgbus' + ".parquet"
+        )
+        df_p_bus_agents.to_parquet(parquet_pathname)
 
     def get_df_p_agents(self, tech):
 
@@ -85,8 +92,33 @@ class SDDPParquet:
         # df_p_agents["MauleB"] = np.minimum(0, df_p_agents["MauleB"] + df_p_agents["MauleG"])
         # df_p_agents["MauleG"] = np.maximum(0, df_p_agents["MauleG"] + temp)
 
+        df_p_agents.columns = [
+            self.dict_paths_plants[pathname][name].plant_code
+            for name in df_p_agents.columns.to_list()
+        ]
         return df_p_agents
 
+    def get_df_p_bus_agents(self):
+        pathname = self.sddp_command.pathname
+        dict_bus_agents = {key.bus_name: key.bus_code for key in self.dict_paths_plants[pathname].values()}
+        bus_agents = list({key.bus_name for key in self.dict_paths_plants[pathname].values()})
+        load_options = psr.factory.create("DataFrameLoadOptions")
+        assert load_options is not None
+        # if load_options is None, the factory failed to create the object
+        load_options.set("FilterAgents", bus_agents)
+
+        dataframe_pathname = os.path.join(self.sddp_command.pathname, 'cmgbus' + ".hdr")
+        df_f_bus_agents = psr.factory.load_dataframe(
+            dataframe_pathname,
+            options=load_options,
+        )
+        df_p_bus_agents = df_f_bus_agents.to_pandas()
+        df_p_bus_agents.columns = [
+            dict_bus_agents[name]
+            for name in df_p_bus_agents.columns.to_list()
+        ]
+        return df_p_bus_agents
+    
     def safe_get_ref_bus(self, plant) -> psr.factory.DataObject:
         """Safely get RefBus from plant, trying generators first then direct."""
         # Try generators path
