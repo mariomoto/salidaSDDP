@@ -1,13 +1,14 @@
+import numpy as np
 import psr.factory
 import os
-from SDDPTools.Parameters import DICT_TECH_PLANT, PLANT, SDDPCommand
+from SDDPTools.Parameters import DICT_TECH_PLANT, PLANT, SDDPCloudCommand
 
 
 class SDDPParquet:
 
-    def __init__(self, sddp_command: SDDPCommand):
-        self.sddp_command = sddp_command
-        self.study = psr.factory.load_study(self.sddp_command.pathname)
+    def __init__(self, sddp_cloud_command: SDDPCloudCommand):
+        self.sddp_cloud_command = sddp_cloud_command
+        self.study = psr.factory.load_study(self.sddp_cloud_command.pathname)
         self.dict_paths_plants = dict()
         dict_paths_techs_agents = dict()
         with open("path_tech_agent.csv", "r", encoding="utf-8") as f:
@@ -25,7 +26,7 @@ class SDDPParquet:
 
     def ger_bin_to_parquet(self):
 
-        pathname = self.sddp_command.pathname
+        pathname = self.sddp_cloud_command.pathname
         if pathname not in self.dict_paths_plants:
             self.dict_paths_plants.update({pathname: dict()})
         for tech in self.dict_paths_techs_agents[pathname].keys():
@@ -52,11 +53,11 @@ class SDDPParquet:
 
             df_p_agents = self.get_df_p_agents(tech)
             parquet_pathname = os.path.join(
-                self.sddp_command.pathname, tech + ".parquet"
+                self.sddp_cloud_command.pathname, tech + ".parquet"
             )
             df_p_agents.to_parquet(parquet_pathname)
         plants_pathname = os.path.join(
-            self.sddp_command.pathname, "plants" + ".csv"
+            self.sddp_cloud_command.pathname, "plants" + ".csv"
         )
         with open(plants_pathname, "w", encoding="utf-8") as f:
             print("genName,genCode,busName,busCode", file=f)
@@ -65,13 +66,13 @@ class SDDPParquet:
 
         df_p_bus_agents = self.get_df_p_bus_agents()
         parquet_pathname = os.path.join(
-            self.sddp_command.pathname, 'cmgbus' + ".parquet"
+            self.sddp_cloud_command.pathname, 'cmgbus' + ".parquet"
         )
         df_p_bus_agents.to_parquet(parquet_pathname)
 
     def get_df_p_agents(self, tech):
 
-        pathname = self.sddp_command.pathname
+        pathname = self.sddp_cloud_command.pathname
         dict_techs_agents = self.dict_paths_techs_agents[pathname]
         agents = dict_techs_agents[tech].split(";")
 
@@ -80,17 +81,17 @@ class SDDPParquet:
         # if load_options is None, the factory failed to create the object
         load_options.set("FilterAgents", agents)
 
-        dataframe_pathname = os.path.join(self.sddp_command.pathname, tech + ".hdr")
+        dataframe_pathname = os.path.join(self.sddp_cloud_command.pathname, tech + ".hdr")
         df_f_agents = psr.factory.load_dataframe(
             dataframe_pathname,
             options=load_options,
         )
         df_p_agents = df_f_agents.to_pandas()
         # df_p_agents = df_p_agents.groupby(["year", "month", "hour"]).mean()
-
-        # temp = df_p_agents["MauleB"]
-        # df_p_agents["MauleB"] = np.minimum(0, df_p_agents["MauleB"] + df_p_agents["MauleG"])
-        # df_p_agents["MauleG"] = np.maximum(0, df_p_agents["MauleG"] + temp)
+        if tech == "gerhid":
+            temp = df_p_agents["MauleB"]
+            df_p_agents["MauleB"] = np.minimum(0, df_p_agents["MauleB"] + df_p_agents["MauleG"])
+            df_p_agents["MauleG"] = np.maximum(0, df_p_agents["MauleG"] + temp)
 
         df_p_agents.columns = [
             self.dict_paths_plants[pathname][name].plant_code
@@ -99,7 +100,7 @@ class SDDPParquet:
         return df_p_agents
 
     def get_df_p_bus_agents(self):
-        pathname = self.sddp_command.pathname
+        pathname = self.sddp_cloud_command.pathname
         dict_bus_agents = {key.bus_name: key.bus_code for key in self.dict_paths_plants[pathname].values()}
         bus_agents = list({key.bus_name for key in self.dict_paths_plants[pathname].values()})
         load_options = psr.factory.create("DataFrameLoadOptions")
@@ -107,7 +108,7 @@ class SDDPParquet:
         # if load_options is None, the factory failed to create the object
         load_options.set("FilterAgents", bus_agents)
 
-        dataframe_pathname = os.path.join(self.sddp_command.pathname, 'cmgbus' + ".hdr")
+        dataframe_pathname = os.path.join(self.sddp_cloud_command.pathname, 'cmgbus' + ".hdr")
         df_f_bus_agents = psr.factory.load_dataframe(
             dataframe_pathname,
             options=load_options,

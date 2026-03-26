@@ -1,6 +1,6 @@
 from typing import NamedTuple
 
-class SDDPCommand(NamedTuple):
+class SDDPCloudCommand(NamedTuple):
     command: str
     casename: str
     pathname: str
