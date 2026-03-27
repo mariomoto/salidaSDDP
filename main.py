@@ -1,42 +1,52 @@
+import tkinter as tk
+from tkinter.filedialog import askdirectory
 import concurrent.futures
-import SDDPTools.SDDPCloud as sc
-import SDDPTools.SDDPParquet as sp
-from SDDPTools.Parameters import SDDPCloudCommand
+import PSRCloudTools.PSRCloudCommand as sc
+import PSRCloudTools.PSRIOCommand as sio
+from PSRCloudTools.Parameters import PSRCloudCommand, PSRIOCommand
 import psr.cloud
 
 
-def run(sddp_cloud_command: SDDPCloudCommand):
+def run(psrcloud_command: PSRCloudCommand):
     client = psr.cloud.Client()
 
-    study_case = sc.SDDPStudyCase(client, sddp_cloud_command)
+    study_case = sc.PSRCloudCase(client, psrcloud_command)
     study_case.run_study()
 
 
-def download(sddp_cloud_command: SDDPCloudCommand):
+def download(psrcloud_command: PSRCloudCommand):
     client = psr.cloud.Client()
 
-    study_case = sc.SDDPStudyCase(client, sddp_cloud_command)
+    study_case = sc.PSRCloudCase(client, psrcloud_command)
     study_case.download_files()
 
 
-def parquet(sddp_cloud_command: SDDPCloudCommand):
+def parquet(psrio_command: PSRIOCommand):
 
-    study_case = sp.SDDPParquet(sddp_cloud_command)
+    study_case = sio.PSRIOCase(psrio_command)
     study_case.ger_bin_to_parquet()     
 
 
-sddp_cloud_commands_list = sc.SDDPCloudCommandsList()
-
 if __name__ == '__main__':
-    # ThreadPoolExecutor doesn't have the Windows spawning issue
+    # tk.Tk().withdraw() # part of the import if you are not using other tkinter functions
+
+    # directory = askdirectory()
+
+    psrcloud_commands_list = sc.PSRCloudCommandsList()
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = []
-        for sddp_cloud_command in sddp_cloud_commands_list:
-            match sddp_cloud_command.command:
+        for psrcloud_command in psrcloud_commands_list:
+            match psrcloud_command.command:
                 case "Run":
-                    future = executor.submit(run, sddp_cloud_command)
+                    future = executor.submit(run, psrcloud_command)
                     futures.append(future)
                 case "Download":
-                    download(sddp_cloud_command)
-                case "Parquet":
-                    parquet(sddp_cloud_command)
+                    download(psrcloud_command)
+
+    psrio_commands_list = sio.PSRIOCommandsList()
+
+    for psrio_command in psrio_commands_list:
+        match psrio_command.command:
+            case "Parquet":
+                parquet(psrio_command)

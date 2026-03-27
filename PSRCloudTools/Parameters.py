@@ -1,12 +1,22 @@
 from typing import NamedTuple
 
-class SDDPCloudCommand(NamedTuple):
+class PSRCloudCommand(NamedTuple):
     command: str
     casename: str
     pathname: str
     parent_id: str | None
     id: int
     output_files: str
+    
+    def __str__(self):
+        result = [str(item) for item in self]
+        return ",".join(result)
+    
+class PSRIOCommand(NamedTuple):
+    command: str
+    pathname: str
+    tech: str
+    agents: str
     
     def __str__(self):
         result = [str(item) for item in self]
