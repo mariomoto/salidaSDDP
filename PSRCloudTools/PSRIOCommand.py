@@ -2,7 +2,7 @@ import numpy as np
 from typing import List
 import psr.factory
 import os
-from PSRCloudTools.Parameters import DICT_TECH_PLANT, PLANT, PSRIOCommand, PSRIOCommand
+from PSRCloudTools.Parameters import DICT_FILE_PSRIOOBJECT, PSRIOCommand, PSRIOCommand
 
 
 class PSRIOCommandsList(List[PSRIOCommand]):
@@ -12,10 +12,10 @@ class PSRIOCommandsList(List[PSRIOCommand]):
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
-                command, pathname, tech, agents = line
+                command, pathname, file, agents = line
                 self.append(
                     PSRIOCommand(
-                        command, pathname, tech, agents
+                        command, pathname, file, agents
                     )
                 )
 
@@ -24,52 +24,35 @@ class PSRIOCase:
     def __init__(self, psrio_command: PSRIOCommand):
         self.psrio_command = psrio_command
         self.study = psr.factory.load_study(self.psrio_command.pathname)
-        self.dict_plants = dict()
+        self.dict_psrio_objects = dict()
 
-    def ger_bin_to_parquet(self):
+    def bin_to_parquet(self):
 
         pathname = self.psrio_command.pathname
-        tech = self.psrio_command.tech
+        file = self.psrio_command.file
         agents = self.psrio_command.agents
         # keys = {gerter, gerhid, gerbat, gergnd}
-        plant_object = DICT_TECH_PLANT[tech]
-        # if tech == gerter: palnt_object = "ThermalPlant", etc.
-        plants = self.study.get(plant_object)
-        assert isinstance(plants, list)
-        for plant in plants:
-            # This goes for every plant within the study. It should be reduced down to the chosen plant (agents).
-            if plant.name.strip() in agents:
-                bus = self.safe_get_ref_bus(plant)
-                self.dict_plants.update(
+        psrio_object = DICT_FILE_PSRIOOBJECT[file]
+        # if file == gerter: palnt_object = "ThermalPlant", etc.
+        psrio_objects = self.study.get(psrio_object)
+        assert isinstance(psrio_objects, list)
+        for psrio_object in psrio_objects:
+            # This goes for every psrio_object within the study. It should be reduced down to the chosen psrio_object (agents).
+            psrio_object_name = psrio_object.name.strip()
+            if psrio_object_name in agents:
+                self.dict_psrio_objects.update(
                     {
-                        plant.name.strip(): PLANT(
-                            plant_code=plant.code,
-                            bus_name=bus.name.strip(),
-                            bus_code=bus.code,
-                        )
+                        psrio_object_name: psrio_object.code
                     }
                 )
 
-        df_p_agents = self.get_df_p_agents(tech)
+        df_p_agents = self.get_df_p_agents(file)
         parquet_pathname = os.path.join(
-            self.psrio_command.pathname, tech + ".parquet"
+            pathname, file + ".parquet"
         )
         df_p_agents.to_parquet(parquet_pathname)
-        plants_pathname = os.path.join(
-            self.psrio_command.pathname, "plants" + ".csv"
-        )
-        with open(plants_pathname, "w", encoding="utf-8") as f:
-            print("genName,genCode,busName,busCode", file=f)
-            for gen in self.dict_plants:
-                print(gen, *self.dict_plants[gen], sep=',', file=f)
 
-        df_p_bus_agents = self.get_df_p_bus_agents()
-        parquet_pathname = os.path.join(
-            self.psrio_command.pathname, 'cmgbus' + ".parquet"
-        )
-        df_p_bus_agents.to_parquet(parquet_pathname)
-
-    def get_df_p_agents(self, tech):
+    def get_df_p_agents(self, file):
 
         pathname = self.psrio_command.pathname
         agents = self.psrio_command.agents.split(";")
@@ -79,59 +62,17 @@ class PSRIOCase:
         # if load_options is None, the factory failed to create the object
         load_options.set("FilterAgents", agents)
 
-        dataframe_pathname = os.path.join(pathname, tech + ".hdr")
+        dataframe_pathname = os.path.join(pathname, file + ".hdr")
         df_f_agents = psr.factory.load_dataframe(
             dataframe_pathname,
             options=load_options,
         )
         df_p_agents = df_f_agents.to_pandas()
         # df_p_agents = df_p_agents.groupby(["year", "month", "hour"]).mean()
-        if tech == "gerhid":
-            temp = df_p_agents["MauleB"]
-            df_p_agents["MauleB"] = np.minimum(0, df_p_agents["MauleB"] + df_p_agents["MauleG"])
-            df_p_agents["MauleG"] = np.maximum(0, df_p_agents["MauleG"] + temp)
 
         df_p_agents.columns = [
-            self.dict_plants[name].plant_code
-            for name in df_p_agents.columns.to_list()
+            self.dict_psrio_objects[name]
+            for name in self.dict_psrio_objects
         ]
         return df_p_agents
 
-    def get_df_p_bus_agents(self):
-        pathname = self.psrio_command.pathname
-        dict_bus_agents = {key.bus_name: key.bus_code for key in self.dict_plants.values()}
-        bus_agents = list({key.bus_name for key in self.dict_plants.values()})
-        load_options = psr.factory.create("DataFrameLoadOptions")
-        assert load_options is not None
-        # if load_options is None, the factory failed to create the object
-        load_options.set("FilterAgents", bus_agents)
-
-        dataframe_pathname = os.path.join(self.psrio_command.pathname, 'cmgbus' + ".hdr")
-        df_f_bus_agents = psr.factory.load_dataframe(
-            dataframe_pathname,
-            options=load_options,
-        )
-        df_p_bus_agents = df_f_bus_agents.to_pandas()
-        df_p_bus_agents.columns = [
-            dict_bus_agents[name]
-            for name in df_p_bus_agents.columns.to_list()
-        ]
-        return df_p_bus_agents
-    
-    def safe_get_ref_bus(self, plant) -> psr.factory.DataObject:
-        """Safely get RefBus from plant, trying generators first then direct."""
-        # Try generators pathname
-        try:
-            generators = plant.get("RefGenerators")
-            if isinstance(generators, list) and generators:
-                generator = generators[0]
-                return generator.get("RefBus")
-        except Exception:
-            pass
-
-        # Fallback to direct RefBus
-        try:
-            return plant.get("RefBus")
-        except Exception as e:
-            print(f"Failed to get RefBus: {e}")
-            return None  # type: ignore

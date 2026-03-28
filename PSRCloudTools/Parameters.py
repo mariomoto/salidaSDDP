@@ -15,21 +15,21 @@ class PSRCloudCommand(NamedTuple):
 class PSRIOCommand(NamedTuple):
     command: str
     pathname: str
-    tech: str
+    file: str
     agents: str
     
     def __str__(self):
         result = [str(item) for item in self]
         return ",".join(result)
     
-class PLANT(NamedTuple):
-    plant_code: int
-    bus_name: str
-    bus_code: int
-
-DICT_TECH_PLANT = {
+DICT_FILE_PSRIOOBJECT = {
+    "cmgbus": "Bus"
     "gerbat": "Battery",
     "gergnd": "RenewablePlant",
     "gerhid": "HydroPlant",
-    "gerter": "ThermalPlant"
+    "gerter": "ThermalPlant",
+    "gbcmgb": "Battery",
+    "ggcmgb": "RenewablePlant",
+    "ghcmgb": "HydroPlant",
+    "gtcmgb": "ThermalPlant",
     }
