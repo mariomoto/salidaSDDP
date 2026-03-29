@@ -1,6 +1,9 @@
 import numpy as np
+import pandas as pd
 from typing import List
+from pathlib import Path
 import psr.factory
+import glob
 import os
 from PSRCloudTools.Parameters import DICT_FILE_PSRIOOBJECT, PSRIOCommand, PSRIOCommand
 
@@ -19,6 +22,12 @@ class PSRIOCommandsList(List[PSRIOCommand]):
                     )
                 )
 
+        folders = {item.pathname for item in self}
+        for folder in folders:
+            files_in_dir = glob.iglob(folder + '/*.parquet')
+
+            for _file in files_in_dir:
+                os.remove(_file)
 class PSRIOCase:
 
     def __init__(self, psrio_command: PSRIOCommand):
@@ -26,31 +35,41 @@ class PSRIOCase:
         self.study = psr.factory.load_study(self.psrio_command.pathname)
         self.dict_psrio_objects = dict()
 
+
     def bin_to_parquet(self):
 
         pathname = self.psrio_command.pathname
         file = self.psrio_command.file
         agents = self.psrio_command.agents
+        self.dict_psrio_objects = dict()
         # keys = {gerter, gerhid, gerbat, gergnd}
-        psrio_object = DICT_FILE_PSRIOOBJECT[file]
+        psrio_object_type = DICT_FILE_PSRIOOBJECT[file].object_type
         # if file == gerter: palnt_object = "ThermalPlant", etc.
-        psrio_objects = self.study.get(psrio_object)
+        psrio_objects = self.study.get(psrio_object_type)
         assert isinstance(psrio_objects, list)
-        for psrio_object in psrio_objects:
-            # This goes for every psrio_object within the study. It should be reduced down to the chosen psrio_object (agents).
-            psrio_object_name = psrio_object.name.strip()
+        for psrio_object_type in psrio_objects:
+            # This goes for every psrio_object_type within the study. It should be reduced down to the chosen psrio_object_type (agents).
+            psrio_object_name = psrio_object_type.name.strip()
             if psrio_object_name in agents:
                 self.dict_psrio_objects.update(
                     {
-                        psrio_object_name: psrio_object.code
+                        psrio_object_name: psrio_object_type.code
                     }
                 )
 
+        info = DICT_FILE_PSRIOOBJECT[file]
+        parquet_filename = info.object_filename
         df_p_agents = self.get_df_p_agents(file)
+
         parquet_pathname = os.path.join(
-            pathname, file + ".parquet"
+            pathname, parquet_filename + ".parquet"
         )
-        df_p_agents.to_parquet(parquet_pathname)
+        if not os.path.exists(parquet_pathname):
+            df_p_agents.to_parquet(parquet_pathname)
+        else:
+            df_p_prev = pd.read_parquet(parquet_pathname)
+            df_p_agents = pd.concat([df_p_prev, df_p_agents], axis=1)
+            df_p_agents.to_parquet(parquet_pathname)
 
     def get_df_p_agents(self, file):
 
@@ -68,11 +87,21 @@ class PSRIOCase:
             options=load_options,
         )
         df_p_agents = df_f_agents.to_pandas()
+        days = (df_p_agents.index.get_level_values('hour') - 1) // 24 + 1
+        hours = (df_p_agents.index.get_level_values('hour') - 1) % 24
+
+        df_p_agents.index = pd.MultiIndex.from_arrays([
+            df_p_agents.index.get_level_values('scenario'),  # keep second level
+            df_p_agents.index.get_level_values('year'),  # keep second level
+            df_p_agents.index.get_level_values('month'),  # keep second level
+            days,
+            hours
+        ], names=["scenario", "year", "month", "day", "hour"])
         # df_p_agents = df_p_agents.groupby(["year", "month", "hour"]).mean()
 
         df_p_agents.columns = [
             self.dict_psrio_objects[name]
-            for name in self.dict_psrio_objects
+            for name in df_p_agents.columns.tolist()
         ]
         return df_p_agents
 

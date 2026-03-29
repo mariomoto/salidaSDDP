@@ -22,14 +22,18 @@ class PSRIOCommand(NamedTuple):
         result = [str(item) for item in self]
         return ",".join(result)
     
+class PsrioObjectInfo(NamedTuple):
+    object_type: str
+    object_filename: str
+    
 DICT_FILE_PSRIOOBJECT = {
-    "cmgbus": "Bus"
-    "gerbat": "Battery",
-    "gergnd": "RenewablePlant",
-    "gerhid": "HydroPlant",
-    "gerter": "ThermalPlant",
-    "gbcmgb": "Battery",
-    "ggcmgb": "RenewablePlant",
-    "ghcmgb": "HydroPlant",
-    "gtcmgb": "ThermalPlant",
+    "cmgbus": PsrioObjectInfo("Bus", "cmgbus"),
+    "gerbat": PsrioObjectInfo("Battery", "EnergyOutputs"),
+    "gergnd": PsrioObjectInfo("RenewablePlant", "EnergyOutputs"),
+    "gerhid": PsrioObjectInfo("HydroPlant", "EnergyOutputs"),
+    "gerter": PsrioObjectInfo("ThermalPlant", "EnergyOutputs"),
+    "gbcmgb": PsrioObjectInfo("Battery", "Sales"),
+    "ggcmgb": PsrioObjectInfo("RenewablePlant", "Sales"),
+    "ghcmgb": PsrioObjectInfo("HydroPlant", "Sales"),
+    "gtcmgb": PsrioObjectInfo("ThermalPlant", "Sales")
     }
