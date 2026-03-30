@@ -15,6 +15,7 @@ class PSRCloudCommand(NamedTuple):
 class PSRIOCommand(NamedTuple):
     command: str
     pathname: str
+    flats: str
     file: str
     agents: str
     
@@ -35,5 +36,6 @@ DICT_FILE_PSRIOOBJECT = {
     "gbcmgb": PsrioObjectInfo("Battery", "Sales"),
     "ggcmgb": PsrioObjectInfo("RenewablePlant", "Sales"),
     "ghcmgb": PsrioObjectInfo("HydroPlant", "Sales"),
-    "gtcmgb": PsrioObjectInfo("ThermalPlant", "Sales")
+    "gtcmgb": PsrioObjectInfo("ThermalPlant", "Sales"),
+    "ingtci": PsrioObjectInfo("Circuit", "ingtci"),
     }

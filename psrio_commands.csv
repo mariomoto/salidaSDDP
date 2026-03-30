@@ -1,6 +1,13 @@
-path,tech,file,agents
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,gerhid,Colbun;Machicura;MauleB;MauleG
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,gerbat,BAT.Maule
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,ghcmgb,Colbun;Machicura;MauleB;MauleG
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,gbcmgb,BAT.Maule
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,cmgbus,AJahuel220;CrucEnc220;PMontt220;Charrua220
+path,tech,file,flats,agents
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,gerhid,Colbun;Machicura;MauleB;MauleG
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,gerbat,BAT.Maule
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,ghcmgb,Colbun;Machicura;MauleB;MauleG
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,gbcmgb,BAT.Maule
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,cmgbus,AJahuel220;CrucEnc220;PMontt220;Charrua220
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,ingtci,
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,gerhid,Colbun;Machicura;MauleB;MauleG
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,gerbat,BAT.Maule
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,ghcmgb,Colbun;Machicura;MauleB;MauleG
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,gbcmgb,BAT.Maule
+NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,cmgbus,AJahuel220;CrucEnc220;PMontt220;Charrua220
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,DH,ingtci,
