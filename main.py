@@ -24,7 +24,7 @@ def download(psrcloud_command: PSRCloudCommand):
 def parquet(psrio_command: PSRIOCommand):
 
     study_case = sio.PSRIOCase(psrio_command)
-    study_case.bin_to_parquet()     
+    study_case.bin_to_parquet()
 
 
 if __name__ == '__main__':
@@ -33,13 +33,14 @@ if __name__ == '__main__':
     # directory = askdirectory()
 
     psrcloud_commands_list = sc.PSRCloudCommandsList()
-    # with concurrent.futures.ThreadPoolExecutor() as executor:
-        # futures = []
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
     for psrcloud_command in psrcloud_commands_list:
         match psrcloud_command.command:
             case "Run":
-                # future = executor.submit(run, psrcloud_command)
-                # futures.append(future)
+                future = executor.submit(run, psrcloud_command)
+                futures.append(future)
+            case "RunDownload":
                 run(psrcloud_command)
             case "Download":
                 download(psrcloud_command)

@@ -15,10 +15,10 @@ class PSRIOCommandsList(List[PSRIOCommand]):
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
-                command, pathname, flats, file, agents = line
+                command, pathname, levels, file, agents = line
                 self.append(
                     PSRIOCommand(
-                        command, pathname, flats, file, agents
+                        command, pathname, levels, file, agents
                     )
                 )
 
@@ -28,8 +28,8 @@ class PSRIOCommandsList(List[PSRIOCommand]):
             if command == "Parquet":
                 folder = item.pathname
                 object_filename = DICT_FILE_PSRIOOBJECT[item.file].object_filename
-                flats = item.flats
-                files_in_dir = glob.iglob(os.path.join(folder, object_filename  + flats + ".parquet"))
+                levels = item.levels
+                files_in_dir = glob.iglob(os.path.join(folder, object_filename  + levels + ".parquet"))
                 for _file in files_in_dir:
                     os.remove(_file)
 
@@ -69,7 +69,7 @@ class PSRIOCase:
         df_p_agents = self.get_df_p_agents(file, agents)
 
         parquet_pathname = os.path.join(
-            pathname, parquet_filename + self.psrio_command.flats + ".parquet"
+            pathname, parquet_filename + self.psrio_command.levels + ".parquet"
         )
         if not os.path.exists(parquet_pathname):
             df_p_agents.to_parquet(parquet_pathname)
@@ -94,26 +94,34 @@ class PSRIOCase:
             options=load_options,
         )
         df_p_agents = df_f_agents.to_pandas()
+
         days = (df_p_agents.index.get_level_values('hour') - 1) // 24 + 1
         hours = (df_p_agents.index.get_level_values('hour') - 1) % 24
 
-        df_p_agents.index = pd.MultiIndex.from_arrays([
-            df_p_agents.index.get_level_values('scenario'),
-            df_p_agents.index.get_level_values('year'),
+        level_arrays = [
+            df_p_agents.index.get_level_values('year'), 
             df_p_agents.index.get_level_values('month'),
             days,
-            hours
-        ], names=["scenario", "year", "month", "day", "hour"])
+            hours]
+        
+        level_names = ["year", "month", "day", "hour"]
 
-        flats = ["scenario", "year", "month", "day", "hour"]
-        for flat in self.psrio_command.flats:
-            match flat:
-                case "S": flats.remove("scenario")
-                case "M": flats.remove("month")
-                case "D": flats.remove("day")
-                case "H": flats.remove("hour")
+        if 'scenario' in df_p_agents.index.names:
+            level_arrays.append(df_p_agents.index.get_level_values('scenario'))
+            level_names.append("scenario")
 
-        df_p_agents = df_p_agents.groupby(flats).sum()
+        df_p_agents.index = pd.MultiIndex.from_arrays(level_arrays, names=level_names)
+
+        for level in self.psrio_command.levels:
+            match level:
+                case "S": 
+                    if 'scenario' in level_names:
+                        level_names.remove("scenario") 
+                case "M": level_names.remove("month")
+                case "D": level_names.remove("day")
+                case "H": level_names.remove("hour")
+
+        df_p_agents = df_p_agents.groupby(level_names).sum()
 
         df_p_agents.columns = [
             self.dict_psrio_objects[name]
