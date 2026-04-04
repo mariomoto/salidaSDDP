@@ -3,25 +3,24 @@ from tkinter.filedialog import askdirectory
 import concurrent.futures
 import PSRCloudTools.PSRCloudCommand as sc
 import PSRCloudTools.PSRIOCommand as sio
-from PSRCloudTools.Parameters import PSRCloudCommand, PSRIOCommand
 import psr.cloud
 
 
-def run(psrcloud_command: PSRCloudCommand):
+def run(psrcloud_command: sc.PSRCloudCommand):
     client = psr.cloud.Client()
 
     study_case = sc.PSRCloudCase(client, psrcloud_command)
     study_case.run_study()
 
 
-def download(psrcloud_command: PSRCloudCommand):
+def download(psrcloud_command: sc.PSRCloudCommand):
     client = psr.cloud.Client()
 
     study_case = sc.PSRCloudCase(client, psrcloud_command)
     study_case.download_files()
 
 
-def parquet(psrio_command: PSRIOCommand):
+def parquet(psrio_command: sio.PSRIOCommand):
 
     study_case = sio.PSRIOCase(psrio_command)
     study_case.bin_to_parquet()
@@ -42,6 +41,7 @@ if __name__ == '__main__':
                 futures.append(future)
             case "RunDownload":
                 run(psrcloud_command)
+                download(psrcloud_command)
             case "Download":
                 download(psrcloud_command)
 

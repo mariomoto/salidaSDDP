@@ -1,12 +1,22 @@
-import numpy as np
 import pandas as pd
 from typing import List
-from pathlib import Path
-import psr.factory
+from typing import NamedTuple
 import glob
 import os
-from PSRCloudTools.Parameters import DICT_FILE_PSRIOOBJECT, PSRIOCommand, PSRIOCommand
+import psr.factory
+from PSRCloudTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
+from PSRCloudTools.Parameters import DICT_PSRCSVFILE_PSRIOOBJECT
 
+class PSRIOCommand(NamedTuple):
+    command: str
+    pathname: str
+    levels: str
+    file: str
+    agents: str
+    
+    def __str__(self):
+        result = [str(item) for item in self]
+        return ",".join(result)
 
 class PSRIOCommandsList(List[PSRIOCommand]):
     def __init__(self):
@@ -27,7 +37,7 @@ class PSRIOCommandsList(List[PSRIOCommand]):
             command = item.command
             if command == "Parquet":
                 folder = item.pathname
-                object_filename = DICT_FILE_PSRIOOBJECT[item.file].object_filename
+                object_filename = DICT_PSRFILE_PSRIOOBJECT[item.file].object_filename
                 levels = item.levels
                 files_in_dir = glob.iglob(os.path.join(folder, object_filename  + levels + ".parquet"))
                 for _file in files_in_dir:
@@ -38,6 +48,18 @@ class PSRIOCase:
     def __init__(self, psrio_command: PSRIOCommand):
         self.psrio_command = psrio_command
         self.study = psr.factory.load_study(self.psrio_command.pathname)
+
+        # for csv_file in DICT_PSRCSVFILE_PSRIOOBJECT:
+
+        #     csv_filepath = os.path.join(self.psrio_command.pathname, csv_file + ".csv")
+        #     with open(csv_filepath, "r", encoding="utf-8") as f:
+        #         f.readline()
+        #         f.readline()
+        #         for line in f:
+        #             plant, *_ = line.strip().split(",")
+        #             plant = plant.strip()
+        #             print(plant)
+
         self.dict_psrio_objects = dict()
 
 
@@ -48,7 +70,7 @@ class PSRIOCase:
         agents = self.psrio_command.agents
         self.dict_psrio_objects = dict()
         # keys = {gerter, gerhid, gerbat, gergnd}
-        psrio_object_type = DICT_FILE_PSRIOOBJECT[file].object_type
+        psrio_object_type = DICT_PSRFILE_PSRIOOBJECT[file].object_type
         # if file == gerter: palnt_object = "ThermalPlant", etc.
         psrio_objects = self.study.get(psrio_object_type)
         assert isinstance(psrio_objects, list)
@@ -65,7 +87,7 @@ class PSRIOCase:
                     }
                 )
 
-        parquet_filename = DICT_FILE_PSRIOOBJECT[file].object_filename
+        parquet_filename = DICT_PSRFILE_PSRIOOBJECT[file].object_filename
         df_p_agents = self.get_df_p_agents(file, agents)
 
         parquet_pathname = os.path.join(

@@ -4,7 +4,19 @@ import psr.cloud
 import psr.cloud.status
 import time
 import os
-from PSRCloudTools.Parameters import PSRCloudCommand
+
+class PSRCloudCommand:
+
+    def __init__(self, 
+                 command: str, casename: str, pathname: str, parent_id: str | None, 
+                 id: int, output_files: str
+        ):
+        self.command = command
+        self.casename = casename
+        self.pathname = pathname
+        self.parent_id = parent_id
+        self.id = id
+        self.output_files = output_files
 
 
 class PSRCloudCommandsList(List[PSRCloudCommand]):
@@ -48,9 +60,7 @@ class PSRCloudCase:
         try:
             assert isinstance(self.case, psr.cloud.Case)
             case_id=self.client.run_case(self.case)
-            self.psrcloud_command = self.psrcloud_command._replace(
-                id=case_id
-            )
+            self.psrcloud_command.id=case_id
             status, status_msg = self.client.get_status(self.psrcloud_command.id)
 
             while status not in psr.cloud.status.FINISHED_STATUS:  # type: ignore
