@@ -1,5 +1,4 @@
-s2pOut.csv
-PSRCloudTools/__pycache__/*
-s2pOut.csv
+*.pyc
 test.ipynb
-scOut.csv
+UML/.*.dtmp
+UML/.*.bkp

@@ -19,9 +19,16 @@ DICT_PSRFILE_PSRIOOBJECT = {
     "demxba": PsrioObjectInfo("Bus", "demxba"),
 }
 
-DICT_PSRCSVFILE_PSRIOOBJECT = {
+DICT_PSRPLANTCSV_PSRIOOBJECT = {
     "atbatt": "Battery",
     "athidr": "HydroPlant",
     "atrenw": "RenewablePlant",
     "atterm": "ThermalPlant",
 }
+
+LIST_PSRIOOBJECT = [
+    "Battery",
+    "HydroPlant",
+    "RenewablePlant",
+    "ThermalPlant",
+]

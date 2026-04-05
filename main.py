@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 import concurrent.futures
-import PSRCloudTools.PSRCloudCommand as sc
-import PSRCloudTools.PSRIOCommand as sio
+import PSRTools.PSRCloudCase as sc
+import PSRTools.PSRIOCase as sio
 import psr.cloud
 
 
@@ -18,12 +18,6 @@ def download(psrcloud_command: sc.PSRCloudCommand):
 
     study_case = sc.PSRCloudCase(client, psrcloud_command)
     study_case.download_files()
-
-
-def parquet(psrio_command: sio.PSRIOCommand):
-
-    study_case = sio.PSRIOCase(psrio_command)
-    study_case.bin_to_parquet()
 
 
 if __name__ == '__main__':
@@ -45,9 +39,7 @@ if __name__ == '__main__':
             case "Download":
                 download(psrcloud_command)
 
-    psrio_commands_list = sio.PSRIOCommandsList()
+    psrio_cases_list = sio.PSRIOCasesList()
 
-    for psrio_command in psrio_commands_list:
-        match psrio_command.command:
-            case "Parquet":
-                parquet(psrio_command)
+    for psrio_case in psrio_cases_list.get_cases():
+            psrio_case.run()
