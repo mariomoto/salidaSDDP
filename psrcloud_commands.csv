@@ -1,6 +1,7 @@
-command,pathname,parent_id,id,techs
+command,pathname,parent_id,id,output_files
 NRun,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,215219,,
 NRunDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,215219,,cmgbus;gerhid;gerbat;gergnd;gerter;ghcmgb;gbcmgb;ggcmgb;gtcmgb;ingtci;demxba
 NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,215591,cmgbus;gerhid;gerbat;gergnd;gerter;ghcmgb;gbcmgb;ggcmgb;gtcmgb;ingtci;demxba
 NDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,215367,cmgbus;gerhid;gerbat;gergnd;gerter;ghcmgb;gbcmgb;ggcmgb;gtcmgb;ingtci;demxba
 NRunDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,215219,,cmgbus;gerhid;gerbat;gergnd;gerter;ghcmgb;gbcmgb;ggcmgb;gtcmgb;ingtci;demxba
+RunDownload,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-03Frh-test,215624,,cmgbus;gerhid;gerbat;gergnd;gerter;ghcmgb;gbcmgb;ggcmgb;gtcmgb;ingtci;demxba

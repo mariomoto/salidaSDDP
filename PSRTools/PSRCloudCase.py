@@ -8,11 +8,11 @@ import os
 class PSRCloudCommand:
 
     def __init__(self, 
-                 command: str, casename: str, pathname: str, parent_id: str | None, 
+                 command: str, pathname: str, parent_id: str | None, 
                  id: int, output_files: str
         ):
         self.command = command
-        self.casename = casename
+        self.casename = Path(pathname).name
         self.pathname = pathname
         self.parent_id = parent_id
         self.id = id
@@ -27,12 +27,11 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
                 command, pathname, parent_id, id, output_files = line
-                casename = Path(pathname).name
                 parent_id = parent_id or None
                 id = int(id or "0")
                 self.append(
                     PSRCloudCommand(
-                        command, casename, pathname, parent_id, id, output_files
+                        command, pathname, parent_id, id, output_files
                     )
                 )
 
@@ -75,8 +74,8 @@ class PSRCloudCase:
                     previous_status = status
         except psr.cloud.CloudInputError as e:
             print(f"Error running case: {e}")
-        finally:
-            return status
+
+        return status
 
     def download_files(self):
         if self.psrcloud_command.id:

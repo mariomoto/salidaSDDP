@@ -11,20 +11,20 @@ from PSRTools.PSRIOCommand import PSRIOCommand
 class PSRIOCasesList():
     def __init__(self):
 
-        psrio_cases_dict = defaultdict(list)
+        psrio_commands: defaultdict[str, list[str]] = defaultdict(list)
         with open(os.path.join("psrio_commands.csv"), "r", encoding="utf-8") as f:
             _ = next(f)
             while line := f.readline().strip():
                 line = [item.strip() for item in line.split(",")]
-                command, pathname, levels, file, agents = line
-                psrio_commands_strings = ",".join([command, levels, file, agents])
-                psrio_cases_dict[pathname].append(psrio_commands_strings)
+                command, pathname, levels, spawn, file, agents = line
+                psrio_commands_strings = ",".join([command, levels, spawn, file, agents])
+                psrio_commands[pathname].append(psrio_commands_strings)
 
-        self.psrio_cases_list = []
-        for pathname, psrio_commands_strings in psrio_cases_dict.items():
+        self.psrio_cases_list: List[PSRIOCase] = []
+        for pathname, psrio_commands_strings in psrio_commands.items():
             self.psrio_cases_list.append(PSRIOCase(pathname, psrio_commands_strings))
 
-    def get_cases(self) -> List:
+    def get_cases(self) -> List[PSRIOCase]:
         return self.psrio_cases_list
 
 
@@ -32,31 +32,33 @@ class PSRIOCase:
 
     def __init__(self, pathname: str, psrio_commands_strings: List[str]):
         self.pathname = pathname
-        self.study = psr.factory.load_study(pathname)
-        self.psrio_cases_dict = defaultdict(list)
+        self.study: psr.factory.Study = psr.factory.load_study(pathname)
+        self.psrio_commands: defaultdict[str, List[PSRIOCommand]] = defaultdict(list)
 
         for string in psrio_commands_strings:
-            command, levels, file, agents = string.split(",")
-            psrio_command = PSRIOCommand(self.study, pathname, command, levels, file, agents)
-            psrio_object_filename = DICT_PSRFILE_PSRIOOBJECT[psrio_command.file].object_filename + levels
-            self.psrio_cases_dict[psrio_object_filename].append(psrio_command)
+            command, levels, spawn,  file, agents = string.split(",")
 
-        for psrio_object_filename in self.psrio_cases_dict:
+            if spawn.strip() == 'SB':
+
+                spawn_file = 'cmgbar'
+                spawn_agents = self.get_bus_agents(agents)
+                psrio_object_filename = self.add_psrio_command(
+                    pathname, command, levels, 'SB',  spawn_file, spawn_agents
+                )
+
+                parquet_filename = os.path.join(self.pathname, psrio_object_filename + ".parquet")
+                if os.path.exists(parquet_filename): 
+                    os.remove(parquet_filename)
+
+            psrio_object_filename = self.add_psrio_command(
+                pathname, command, levels, '',  file, agents
+            )
+
             parquet_filename = os.path.join(self.pathname, psrio_object_filename + ".parquet")
+
             if os.path.exists(parquet_filename): 
                 os.remove(parquet_filename)
 
-        # for csv_file in DICT_PSRPLANTCSV_PSRIOOBJECT:
-        #     csv_filepath = os.path.join(self.pathname, csv_file + ".csv")
-        #     print(f"{csv_filepath=}")
-        #     with open(csv_filepath, "r", encoding="utf-8") as f:
-        #         f.readline()
-        #         f.readline()
-        #         for line in f:
-        #             plant, *_ = line.strip().split(",")
-        #             plant = plant.strip()
-        #             psrio_bus = self.getBus(plant)
-        #             print(plant)
 
         gen_bus_filepath = os.path.join(self.pathname, 'gen_bus.csv')
         with open(gen_bus_filepath, "w", encoding="utf-8") as f:
@@ -67,6 +69,18 @@ class PSRIOCase:
                 for plant in plants:
                     bus = self.get_bus(plant)
                     f.write(f"{plant.name}, {plant.code}, {bus.name}, {bus.code}\n")
+
+    def add_psrio_command(self, pathname, command, levels, spawn,  file, agents) -> str:
+        psrio_command = PSRIOCommand(
+            self.study, pathname, command, levels, spawn,  file, agents
+        )
+        psrio_object_filename = (
+            DICT_PSRFILE_PSRIOOBJECT[psrio_command.file].object_filename +
+            levels +
+            spawn
+        )
+        self.psrio_commands[psrio_object_filename].append(psrio_command)
+        return psrio_object_filename
 
     def get_bus(self, plant) -> psr.factory.DataObject:
         """Safely get RefBus from plant, trying generators first then direct."""
@@ -86,10 +100,15 @@ class PSRIOCase:
             print(f"Failed to get RefBus: {e}")
             return None  # type: ignore
 
+    def get_bus_agents(self, agents_string) -> str:
+        agents_list = agents_string.split(";")
+        bus_agents_list = [self.get_bus(plant).name.strip() for plant_name in agents_list 
+                           for plant in self.study.get(DICT_PSRPLANTCSV_PSRIOOBJECT[DICT_PSRFILE_PSRIOOBJECT['cmgbus'].object_type]) 
+                           if plant.name.strip() == plant_name.strip()]
+        return ";".join(bus_agents_list)
 
-
-    def run(self):
-        for psrio_object_filename, psrio_command_list in self.psrio_cases_dict.items():
+    def run_psrio_command(self):
+        for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
             df = pd.DataFrame()
             for psrio_command in psrio_command_list:
                 if psrio_command.command == "Parquet":

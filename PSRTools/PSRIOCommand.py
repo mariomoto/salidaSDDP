@@ -3,11 +3,15 @@ import os
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 class PSRIOCommand():
-    def __init__(self, study: psr.factory.Study, pathname: str, command: str, levels: str, file: str ,agents: str):
+    def __init__(
+            self, study: psr.factory.Study, pathname: str, 
+            command: str, levels: str, spawn: str, file: str ,agents: str
+        ):
         self.study = study
         self.pathname = pathname
         self.command = command
         self.levels = levels
+        self.spawn = spawn
         self.file = file
         self.agents = agents
         self.local_agents = agents
