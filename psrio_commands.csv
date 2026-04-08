@@ -13,11 +13,7 @@ NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\202
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,,cmgbus,AJahuel220;CrucEnc220;PMontt220;Charrua220;Colbun220
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,,,demxba,AJahuel220;CrucEnc220;PMontt220;Charrua220;Colbun220
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_CHB,DH,,ingtci,
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,gerhid,TruenoPMGD;Colbun;Machicura;MauleB;MauleG
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gerhid,TruenoPMGD
 Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gergnd,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ghcmgb,Colbun;Machicura;MauleB;MauleG
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,gerbat,BAT.Maule
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,gbcmgb,BAT.Maule
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,cmgbus,AJahuel220;CrucEnc220;PMontt220;Charrua220;Colbun220
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,demxba,AJahuel220;CrucEnc220;PMontt220;Charrua220;Colbun220
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,DH,,ingtci,
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ghcmgb,TruenoPMGD
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ggcmgb,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25

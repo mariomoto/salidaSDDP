@@ -43,7 +43,7 @@ class PSRIOCase:
                         spawn_file = "cmgbus"
                     spawn_agents = self.get_bus_agents(agents)
                     psrio_object_filename = self.add_psrio_command(
-                    pathname, command, levels, "-" + spw, spawn_file, spawn_agents
+                    pathname, command, levels, "_s", spawn_file, spawn_agents
                 )
                     self.remove_parquet(psrio_object_filename)
 
@@ -93,6 +93,7 @@ class PSRIOCase:
     def get_bus_agents(self, agents_string) -> str:
         agents_list = agents_string.split(";")
         bus_agents_list = [self.gen_bus_dict[agent] for agent in agents_list]
+        bus_agents_list = list(set(bus_agents_list))
         return ";".join(bus_agents_list)
 
     def run_psrio_command(self):
