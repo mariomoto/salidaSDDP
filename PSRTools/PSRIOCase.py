@@ -34,30 +34,23 @@ class PSRIOCase:
         for string in psrio_commands_strings:
             command, levels, spawn, file, agents = string.split(",")
 
-            if spawn.strip() == "SB":
-
-                spawn_file = "cmgbus"
-                spawn_agents = self.get_bus_agents(agents)
-                psrio_object_filename = self.add_psrio_command(
-                    pathname, command, levels, "SB", spawn_file, spawn_agents
+            if spawn.strip():
+                spawn_list = [spw.strip() for spw in spawn.strip().split(";")]
+                for spw in spawn_list:
+                    if spw == "D":
+                        spawn_file = "demxba"
+                    else:
+                        spawn_file = "cmgbus"
+                    spawn_agents = self.get_bus_agents(agents)
+                    psrio_object_filename = self.add_psrio_command(
+                    pathname, command, levels, "-" + spw, spawn_file, spawn_agents
                 )
-
-                parquet_filename = os.path.join(
-                    self.pathname, psrio_object_filename + ".parquet"
-                )
-                if os.path.exists(parquet_filename):
-                    os.remove(parquet_filename)
+                    self.remove_parquet(psrio_object_filename)
 
             psrio_object_filename = self.add_psrio_command(
                 pathname, command, levels, "", file, agents
             )
-
-            parquet_filename = os.path.join(
-                self.pathname, psrio_object_filename + ".parquet"
-            )
-
-            if os.path.exists(parquet_filename):
-                os.remove(parquet_filename)
+            self.remove_parquet(psrio_object_filename)
 
     def add_psrio_command(self, pathname, command, levels, spawn, file, agents) -> str:
         psrio_command = PSRIOCommand(
@@ -70,6 +63,14 @@ class PSRIOCase:
         )
         self.psrio_commands[psrio_object_filename].append(psrio_command)
         return psrio_object_filename
+
+    def remove_parquet(self, psrio_object_filename: str):
+        parquet_filename = os.path.join(
+            self.pathname, psrio_object_filename + ".parquet"
+        )
+        if os.path.exists(parquet_filename):
+            os.remove(parquet_filename)
+
 
     def get_bus(self, plant) -> psr.factory.DataObject:
         """Safely get RefBus from plant, trying generators first then direct."""
