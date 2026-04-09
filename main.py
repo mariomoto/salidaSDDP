@@ -42,4 +42,4 @@ if __name__ == '__main__':
     psrio_cases_list = sio.PSRIOCasesList()
 
     for psrio_case in psrio_cases_list.get_cases():
-            psrio_case.run_psrio_command()
+            psrio_case.run_psrio_commands()

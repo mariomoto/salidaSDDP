@@ -96,15 +96,18 @@ class PSRIOCase:
         bus_agents_list = list(set(bus_agents_list))
         return ";".join(bus_agents_list)
 
-    def run_psrio_command(self):
+    def run_psrio_commands(self):
+        df_dict = defaultdict(pd.DataFrame)
         for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
-            df = pd.DataFrame()
             for psrio_command in psrio_command_list:
                 if psrio_command.command == "Parquet":
-                    df = pd.concat([df, psrio_command.bin_to_parquet()], axis=1)
-
+                    df_dict[psrio_object_filename] = pd.concat(
+                        [df_dict[psrio_object_filename], psrio_command.bin_to_parquet()], 
+                        axis=1
+                    )
+        for key, df in df_dict.items():
             parquet_pathname = os.path.join(
-                self.pathname, psrio_object_filename + ".parquet"
+                self.pathname, key + ".parquet"
             )
             df.to_parquet(parquet_pathname)
 
