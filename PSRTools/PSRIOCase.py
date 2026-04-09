@@ -26,10 +26,11 @@ class PSRIOCase:
                 assert isinstance(plants, list)
                 for plant in plants:
                     bus = self.get_bus(plant)
-                    f.write(
-                        f"{plant.name.strip()}, {plant.code}, {bus.name.strip()}, {bus.code}\n"
-                    )
-                    self.gen_bus_dict[plant.name.strip()] = bus.name.strip()
+                    if isinstance(bus, psr.factory.api.DataObject):
+                        f.write(
+                            f"{plant.name.strip()}, {plant.code}, {bus.name.strip()}, {bus.code}\n"
+                        )
+                        self.gen_bus_dict[plant.name.strip()] = bus.name.strip()
 
         for string in psrio_commands_strings:
             command, levels, spawn, file, agents = string.split(",")

@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import sys
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 class PSRIOCommand():
@@ -44,10 +45,17 @@ class PSRIOCommand():
         load_options.set("FilterAgents", agents_list)
 
         dataframe_pathname = os.path.join(self.pathname, self.file + ".hdr")
-        df_f_agents = psr.factory.load_dataframe(
-            dataframe_pathname,
-            options=load_options,
-        )
+        try:
+            df_f_agents = psr.factory.load_dataframe(
+                dataframe_pathname,
+                options=load_options,
+            )
+        except psr.factory.api.FactoryException as e:
+            print(f"Factory Exception caught: {e}")
+            print(f"Error details: Agent not found in the .hdr file")
+            # Add your custom error handling logic here
+            sys.exit()
+
         df_p_agents = df_f_agents.to_pandas()
 
 
