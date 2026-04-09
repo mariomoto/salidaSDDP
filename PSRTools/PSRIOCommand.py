@@ -17,6 +17,8 @@ class PSRIOCommand():
         self.agents = agents
         self.local_agents = agents
         self.dict_psrio_objects = dict()
+    def __repr__(self):
+        return f"PSRIOCommand(command={self.command}, levels={self.levels}, spawn={self.spawn}, file={self.file}, agents={self.agents})"
     
     def bin_to_parquet(self) -> pd.DataFrame:
 
@@ -52,7 +54,7 @@ class PSRIOCommand():
             )
         except psr.factory.api.FactoryException as e:
             print(f"Factory Exception caught: {e}")
-            print(f"Error details: Agent not found in the .hdr file")
+            print(self)
             # Add your custom error handling logic here
             sys.exit()
 

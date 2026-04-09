@@ -46,12 +46,10 @@ class PSRIOCase:
                     psrio_object_filename = self.add_psrio_command(
                     pathname, command, levels, "_s", spawn_file, spawn_agents
                 )
-                    self.remove_parquet(psrio_object_filename)
 
             psrio_object_filename = self.add_psrio_command(
                 pathname, command, levels, "", file, agents
             )
-            self.remove_parquet(psrio_object_filename)
 
     def add_psrio_command(self, pathname, command, levels, spawn, file, agents) -> str:
         psrio_command = PSRIOCommand(
@@ -64,13 +62,6 @@ class PSRIOCase:
         )
         self.psrio_commands[psrio_object_filename].append(psrio_command)
         return psrio_object_filename
-
-    def remove_parquet(self, psrio_object_filename: str):
-        parquet_filename = os.path.join(
-            self.pathname, psrio_object_filename + ".parquet"
-        )
-        if os.path.exists(parquet_filename):
-            os.remove(parquet_filename)
 
 
     def get_bus(self, plant) -> psr.factory.DataObject:
@@ -110,6 +101,8 @@ class PSRIOCase:
             parquet_pathname = os.path.join(
                 self.pathname, key + ".parquet"
             )
+            if os.path.exists(parquet_pathname):
+                os.remove(parquet_pathname)
             df.to_parquet(parquet_pathname)
 
 
