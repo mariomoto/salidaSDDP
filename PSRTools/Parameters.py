@@ -32,3 +32,5 @@ LIST_PSRIOOBJECT = [
     "RenewablePlant",
     "ThermalPlant",
 ]
+
+PSRIO_COMMANDS = ["Parquet"]

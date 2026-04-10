@@ -66,12 +66,12 @@ class PSRIOCommand():
             for name in df_p_agents.columns.tolist()
         ]
 
-        self.group_by(df_p_agents)
+        df_p_agents = self.group_by(df_p_agents)
 
         return df_p_agents
 
 
-    def group_by(self, df_p_agents):
+    def group_by(self, df_p_agents) -> pd.DataFrame:
 
         days = (df_p_agents.index.get_level_values('hour') - 1) // 24 + 1
         hours = (df_p_agents.index.get_level_values('hour') - 1) % 24
@@ -99,4 +99,4 @@ class PSRIOCommand():
                 case "D": level_names.remove("day")
                 case "H": level_names.remove("hour")
 
-        df_p_agents = df_p_agents.groupby(level_names).sum()
+        return df_p_agents.groupby(level_names).sum()

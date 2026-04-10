@@ -3,11 +3,12 @@ Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026
 Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,C;D,gergnd,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25
 Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,,ghcmgb,TruenoPMGD
 Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,,,ggcmgb,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25
-Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,MDHS,,demxba,
-NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gerhid,TruenoPMGD
-NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gergnd,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25
-NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ghcmgb,TruenoPMGD
-NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ggcmgb,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D_test,H,,demxba,
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gerhid,TruenoPMGD
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gergnd,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ghcmgb,TruenoPMGD
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ggcmgb,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC;SOL.PMGAJA25;SOL.PMGCRU26;SOL.PMGPOL25;SOL.PMGPOL26;SOL.PMGAJA26;SOL.PMGPAZ25;SOL.PMGPAZ26;SOL.PMGCRU25
+Parquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,H,,demxba,AJahuel220
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D,,,gerhid,Colbun;Machicura;MauleB;MauleG
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D,,,ghcmgb,Colbun;Machicura;MauleB;MauleG
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D,,,gerbat,BAT.Maule
@@ -15,7 +16,7 @@ NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\202
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D,,,cmgbus,AJahuel220;CrucEnc220;PMontt220;Charrua220;Colbun220
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\2026-01Frh_075_D,,,demxba,AJahuel220;CrucEnc220;PMontt220;Charrua220;Colbun220
 Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,,C;D,gerhid,TruenoPMGD
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,,,ghcmgb,TruenoPMGD
 Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,,C;D,gergnd,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC
+Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,,,ghcmgb,TruenoPMGD
 Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,,,ggcmgb,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,MDHS,,demxba,
+Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,H,,demxba,

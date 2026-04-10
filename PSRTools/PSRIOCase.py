@@ -6,6 +6,7 @@ import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 from PSRTools.Parameters import DICT_PSRPLANTCSV_PSRIOOBJECT
 from PSRTools.Parameters import LIST_PSRIOOBJECT
+from PSRTools.Parameters import PSRIO_COMMANDS
 from PSRTools.PSRIOCommand import PSRIOCommand
 
 
@@ -34,24 +35,24 @@ class PSRIOCase:
 
         for string in psrio_commands_strings:
             command, levels, spawn, file, agents = string.split(",")
+            if command in PSRIO_COMMANDS:
+                if spawn.strip():
+                    spawn_list = [spw.strip() for spw in spawn.strip().split(";")]
+                    for spw in spawn_list:
+                        if spw == "D":
+                            spawn_file = "demxba"
+                        else:
+                            spawn_file = "cmgbus"
+                        spawn_agents = self.get_bus_agents(agents)
+                        psrio_object_filename = self.add_psrio_command(
+                        pathname, command, levels, "_s", spawn_file, spawn_agents
+                    )
 
-            if spawn.strip():
-                spawn_list = [spw.strip() for spw in spawn.strip().split(";")]
-                for spw in spawn_list:
-                    if spw == "D":
-                        spawn_file = "demxba"
-                    else:
-                        spawn_file = "cmgbus"
-                    spawn_agents = self.get_bus_agents(agents)
-                    psrio_object_filename = self.add_psrio_command(
-                    pathname, command, levels, "_s", spawn_file, spawn_agents
+                self.add_psrio_command(
+                    pathname, command, levels, "", file, agents
                 )
 
-            psrio_object_filename = self.add_psrio_command(
-                pathname, command, levels, "", file, agents
-            )
-
-    def add_psrio_command(self, pathname, command, levels, spawn, file, agents) -> str:
+    def add_psrio_command(self, pathname, command, levels, spawn, file, agents) -> None:
         psrio_command = PSRIOCommand(
             self.study, pathname, command, levels, spawn, file, agents
         )
@@ -61,7 +62,6 @@ class PSRIOCase:
             + spawn
         )
         self.psrio_commands[psrio_object_filename].append(psrio_command)
-        return psrio_object_filename
 
 
     def get_bus(self, plant) -> psr.factory.DataObject:
@@ -92,11 +92,10 @@ class PSRIOCase:
         df_dict = defaultdict(pd.DataFrame)
         for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
             for psrio_command in psrio_command_list:
-                if psrio_command.command == "Parquet":
-                    df_dict[psrio_object_filename] = pd.concat(
-                        [df_dict[psrio_object_filename], psrio_command.bin_to_parquet()], 
-                        axis=1
-                    )
+                df_dict[psrio_object_filename] = pd.concat(
+                    [df_dict[psrio_object_filename], psrio_command.bin_to_parquet()], 
+                    axis=1
+                )
         for key, df in df_dict.items():
             parquet_pathname = os.path.join(
                 self.pathname, key + ".parquet"
