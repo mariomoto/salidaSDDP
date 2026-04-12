@@ -4,7 +4,6 @@ import pandas as pd
 import os
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
-from PSRTools.Parameters import DICT_PSRPLANTCSV_PSRIOOBJECT
 from PSRTools.Parameters import LIST_PSRIOOBJECT
 from PSRTools.Parameters import PSRIO_COMMANDS
 from PSRTools.PSRIOCommand import PSRIOCommand
@@ -21,15 +20,20 @@ class PSRIOCase:
         gen_bus_filepath = os.path.join(self.pathname, "gen_bus.csv")
 
         with open(gen_bus_filepath, "w", encoding="utf-8") as f:
-            f.write("genName,genCode,busName,busCode\n")
+            f.write("genName,genCode,busName,busCode,tech\n")
             for psrio_object in LIST_PSRIOOBJECT:
                 plants = self.study.get(psrio_object)
                 assert isinstance(plants, list)
                 for plant in plants:
                     bus = self.get_bus(plant)
                     if isinstance(bus, psr.factory.api.DataObject):
+                        plant_name = plant.name.strip()
+                        if plant_name[3] == '.':
+                            tech = plant_name[0:3]
+                        else:
+                            tech = 'HID'
                         f.write(
-                            f"{plant.name.strip()}, {plant.code}, {bus.name.strip()}, {bus.code}\n"
+                            f"{plant_name},{plant.code},{bus.name.strip()},{bus.code},{tech}\n"
                         )
                         self.gen_bus_dict[plant.name.strip()] = bus.name.strip()
 

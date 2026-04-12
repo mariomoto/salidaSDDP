@@ -17,13 +17,10 @@ DICT_PSRFILE_PSRIOOBJECT = {
     "gtcmgb": PsrioObjectInfo("ThermalPlant", "Sales"),
     "ingtci": PsrioObjectInfo("Circuit", "ingtci"),
     "demxba": PsrioObjectInfo("Bus", "demxba"),
-}
-
-DICT_PSRPLANTCSV_PSRIOOBJECT = {
-    "atbatt": "Battery",
-    "athidr": "HydroPlant",
-    "atrenw": "RenewablePlant",
-    "atterm": "ThermalPlant",
+    "demand": PsrioObjectInfo("System", "demand"),
+    "coster": PsrioObjectInfo("ThermalPlant", "coster"),
+    "cosarr": PsrioObjectInfo("ThermalPlant", "cosarr"),
+    "trstup": PsrioObjectInfo("ThermalPlant", "trstup"),
 }
 
 LIST_PSRIOOBJECT = [
