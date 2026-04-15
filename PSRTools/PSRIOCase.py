@@ -1,5 +1,6 @@
 from collections import defaultdict
 from typing import List
+import inspect
 import pandas as pd
 import os
 import psr.factory
@@ -83,7 +84,15 @@ class PSRIOCase:
         try:
             return plant.get("RefBus")
         except Exception as e:
-            print(f"Failed to get RefBus: {e}")
+            current_method = inspect.currentframe().f_code.co_name
+            current_class = self.__class__.__name__
+            prefix = f"{current_class}.{current_method}"
+            print(f"""
+{prefix}: Factory Exception caught: {e}
+{prefix}: Pathname: {self.pathname}.
+{prefix}: Plant: {plant.name.strip()}.
+{prefix}: Continuing without this plant...
+            """)
             return None  # type: ignore
 
     def get_bus_agents(self, agents_string) -> str:

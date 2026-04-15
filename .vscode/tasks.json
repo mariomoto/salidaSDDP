@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Your Python Task Name",
+            "type": "shell",
+            "command": "python",
+            "args": ["${file}"],
+            "runOptions": { 
+                "instanceLimit": 0 
+            }
+        }
+    ]
+}
