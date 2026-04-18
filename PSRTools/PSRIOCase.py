@@ -49,9 +49,9 @@ class PSRIOCase:
                         else:
                             spawn_file = "cmgbus"
                         spawn_agents = self.get_bus_agents(agents)
-                        psrio_object_filename = self.add_psrio_command(
-                        pathname, command, levels, "_s", spawn_file, spawn_agents
-                    )
+                        self.add_psrio_command(
+                            pathname, command, levels, "_s", spawn_file, spawn_agents
+                        )
 
                 self.add_psrio_command(
                     pathname, command, levels, "", file, agents
@@ -84,7 +84,7 @@ class PSRIOCase:
         try:
             return plant.get("RefBus")
         except Exception as e:
-            current_method = inspect.currentframe().f_code.co_name
+            current_method = inspect.currentframe().f_code.co_name # pyright: ignore[reportOptionalMemberAccess]
             current_class = self.__class__.__name__
             prefix = f"{current_class}.{current_method}"
             print(f"""

@@ -68,6 +68,9 @@ class PSRIOCommand():
 
         df_p_agents = self.group_by(df_p_agents)
 
+        factor = DICT_PSRFILE_PSRIOOBJECT[self.file].factor
+        df_p_agents /= factor
+
         return df_p_agents
 
 
@@ -92,11 +95,22 @@ class PSRIOCommand():
 
         for level in self.levels:
             match level:
-                case "S": 
-                    if 'scenario' in level_names:
-                        level_names.remove("scenario") 
                 case "M": level_names.remove("month")
                 case "D": level_names.remove("day")
                 case "H": level_names.remove("hour")
 
-        return df_p_agents.groupby(level_names).sum()
+        operation = DICT_PSRFILE_PSRIOOBJECT[self.file].operation
+        match operation:
+            case "mean":
+                df_p_agents = df_p_agents.groupby(level_names).mean()
+            case "sum":
+                df_p_agents = df_p_agents.groupby(level_names).sum()
+            case _:
+                print(f"Operation '{operation}' not found, falling back to 'sum'.")
+                df_p_agents = df_p_agents.groupby(level_names).sum()
+
+        if 'scenario' in level_names and "S" in self.levels:
+            level_names.remove("scenario") 
+            df_p_agents = df_p_agents.groupby(level_names).mean()
+
+        return df_p_agents
