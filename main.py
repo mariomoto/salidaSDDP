@@ -20,7 +20,12 @@ def download(psrcloud_command: sc.PSRCloudCommand):
     study_case.download_files()
 
 
-if __name__ == '__main__':
+def run_then_download(psrcloud_command: sc.PSRCloudCommand):
+    run(psrcloud_command)
+    download(psrcloud_command)
+
+
+if __name__ == "__main__":
     # tk.Tk().withdraw() # part of the import if you are not using other tkinter functions
 
     # directory = askdirectory()
@@ -34,8 +39,8 @@ if __name__ == '__main__':
                     future = executor.submit(run, psrcloud_command)
                     futures.append(future)
                 case "RunDownload":
-                    run(psrcloud_command)
-                    download(psrcloud_command)
+                    future = executor.submit(run_then_download, psrcloud_command)
+                    futures.append(future)
                 case "Download":
                     download(psrcloud_command)
 

@@ -1,17 +1,22 @@
 command,pathname,levels,spawn,file,agents
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gerter,CAR.SMARIA;DIE.CANDEL_1;DIE.CANDEL_2;DIE.LPINOS;DIE.NEHUENC3;GNL.Nehu2GAR;GNL.Nehuenc1
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gerhid,Angostura;Blanco;Canutillar;Chacabuquito;Chiburgo;Colbun;Hornito;Juncal;La_Mina;LosQuilos;Machicura;Quilleco;Rucue;SanClemente;SanIgnacio
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gergnd,EOL.HORIZONN;EOL.HORIZONS;EOL.SAN_JUAN;EOL.TOTORAL;SOL.DAS
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gerbat,BAT.CELDASOL;BAT.DAS_2_ED;BAT.ESTEPA2
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gtcmgb,CAR.SMARIA;DIE.CANDEL_1;DIE.CANDEL_2;DIE.LPINOS;DIE.NEHUENC3;GNL.Nehu2GAR;GNL.Nehuenc1
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,ghcmgb,Angostura;Blanco;Canutillar;Chacabuquito;Chiburgo;Colbun;Hornito;Juncal;La_Mina;LosQuilos;Machicura;Quilleco;Rucue;SanClemente;SanIgnacio
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,ggcmgb,EOL.HORIZONN;EOL.HORIZONS;EOL.SAN_JUAN;EOL.TOTORAL;SOL.DAS
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gbcmgb,BAT.CELDASOL;BAT.DAS_2_ED;BAT.ESTEPA2
-Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,cmgbus,AJahuel220;CrucEnc220;Charrua220;Polpaico220;PMontt220
-NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-A,,C,gerhid,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
-NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-A,,,ghcmgb,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
-NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-B,,C,gerhid,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
-NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-B,,,ghcmgb,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gerter,CAR.SMARIA;DIE.CANDEL_1;DIE.CANDEL_2;DIE.LPINOS;DIE.NEHUENC3;GNL.Nehu2GAR;GNL.Nehuenc1
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gerhid,Angostura;Blanco;Canutillar;Chacabuquito;Chiburgo;Colbun;Hornito;Juncal;La_Mina;LosQuilos;Machicura;Quilleco;Rucue;SanClemente;SanIgnacio
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gergnd,EOL.HORIZONN;EOL.HORIZONS;EOL.SAN_JUAN;EOL.TOTORAL;SOL.DAS
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gerbat,BAT.CELDASOL;BAT.DAS_2_ED;BAT.ESTEPA2
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gtcmgb,CAR.SMARIA;DIE.CANDEL_1;DIE.CANDEL_2;DIE.LPINOS;DIE.NEHUENC3;GNL.Nehu2GAR;GNL.Nehuenc1
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,ghcmgb,Angostura;Blanco;Canutillar;Chacabuquito;Chiburgo;Colbun;Hornito;Juncal;La_Mina;LosQuilos;Machicura;Quilleco;Rucue;SanClemente;SanIgnacio
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,ggcmgb,EOL.HORIZONN;EOL.HORIZONS;EOL.SAN_JUAN;EOL.TOTORAL;SOL.DAS
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,gbcmgb,BAT.CELDASOL;BAT.DAS_2_ED;BAT.ESTEPA2
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\2026\2026-03Grh,D,,cmgbus,AJahuel220;CrucEnc220;Charrua220;Polpaico220;PMontt220
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-A,D,,gerhid,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-A,D,,ghcmgb,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-A,,,demand,SEN
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-B,D,,gerhid,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-B,D,,ghcmgb,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
+NParquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-B,,,demand,SEN
+Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-C,D,,gerhid,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
+Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-C,D,,ghcmgb,Blanco;Chacabuquito;Hornito;Juncal;LosQuilos;Canutillar;La_Mina;SanIgnacio;Chiburgo;Colbun;Machicura;SanClemente;Quilleco;Rucue;Angostura;MauleG;MauleB;MauleP
+Parquet,C:\Users\mamaro\Colbun S.A\Gerencia de Planificación - General\Chile\SDDP\estudios\2026-03Grh\CHB-C,,,demand,SEN
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gerhid,TruenoPMGD
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,C;D,gergnd,SOL.PMGD_LAG;SOL.PMGD_CRU;SOL.PMGD_DAL;SOL.PMGD_PAZ;SOL.PMGD_NOG;SOL.PMGD_AJA;SOL.PMGD_ANC
 NParquet,C:\Users\mamaro\OneDrive - Colbun S.A\jobs\2026\02.BombeoMaule\sddp\test,,,ghcmgb,TruenoPMGD

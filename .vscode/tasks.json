@@ -2,12 +2,23 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Your Python Task Name",
+            "label": "Your Python Task 1",
             "type": "shell",
             "command": "python",
             "args": ["${file}"],
-            "runOptions": { 
-                "instanceLimit": 0 
+            "presentation": {
+                "panel": "new",
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Your Python Task 2",
+            "type": "shell",
+            "command": "python",
+            "args": ["${file}"],
+            "presentation": {
+                "panel": "new",
+                "reveal": "always"
             }
         }
     ]
