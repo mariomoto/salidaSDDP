@@ -62,18 +62,21 @@ class PSRCloudCase:
             self.psrcloud_command.id=case_id
             status, status_msg = self.client.get_status(self.psrcloud_command.id)
 
+            num_seconds = 1800
             start = time.monotonic()
-            num_seconds = 600
             previous_status = status
             while status not in psr.cloud.status.FINISHED_STATUS:  # type: ignore
-                if time.monotonic() - start >= num_seconds or status != previous_status:
+
+                if time.monotonic() - start >= num_seconds:
                     start = time.monotonic()
                     status, status_msg = self.client.get_status(self.psrcloud_command.id)
 
+                if status != previous_status:
                     print(
                         f"Case {self.psrcloud_command.id} status changed from {previous_status} to {status}."
                     )
                     previous_status = status
+
         except psr.cloud.CloudInputError as e:
             print(f"Error running case: {e}")
 
