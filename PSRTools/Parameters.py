@@ -13,7 +13,7 @@ DICT_PSRFILE_PSRIOOBJECT = {
     "gergnd": PsrioObjectInfo("RenewablePlant", "EnergyOutputs", "sum", 1),
     "gerhid": PsrioObjectInfo("HydroPlant", "EnergyOutputs", "sum", 1),
     "gerter": PsrioObjectInfo("ThermalPlant", "EnergyOutputs", "sum", 1),
-    "gbcmgb": PsrioObjectInfo("Battery", "Sales", "sum", 1000),
+    "gbcmgb": PsrioObjectInfo("Battery", "Sales", "sum", 1),
     "ggcmgb": PsrioObjectInfo("RenewablePlant", "Sales", "sum", 1),
     "ghcmgb": PsrioObjectInfo("HydroPlant", "Sales", "sum", 1),
     "gtcmgb": PsrioObjectInfo("ThermalPlant", "Sales", "sum", 1),
