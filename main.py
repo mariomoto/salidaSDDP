@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter.filedialog import askdirectory
-import concurrent.futures
+import threading
 import PSRTools.PSRCloudCase as sc
 import PSRTools.PSRIOCase as sio
 import psr.cloud
@@ -31,18 +31,22 @@ if __name__ == "__main__":
     # directory = askdirectory()
 
     psrcloud_commands_list = sc.PSRCloudCommandsList()
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = []
-        for psrcloud_command in psrcloud_commands_list:
-            match psrcloud_command.command:
-                case "Run":
-                    future = executor.submit(run, psrcloud_command)
-                    futures.append(future)
-                case "RunDownload":
-                    future = executor.submit(run_then_download, psrcloud_command)
-                    futures.append(future)
-                case "Download":
-                    download(psrcloud_command)
+    threads = []
+    for psrcloud_command in psrcloud_commands_list:
+        match psrcloud_command.command:
+            case "Run":
+                thread = threading.Thread(target=run, args=(psrcloud_command,))
+                thread.start()
+                threads.append(thread)
+            case "RunDownload":
+                thread = threading.Thread(target=run_then_download, args=(psrcloud_command,))
+                thread.start()
+                threads.append(thread)
+            case "Download":
+                download(psrcloud_command)
+
+    for thread in threads:
+        thread.join()
 
     psrio_cases_list = sio.PSRIOCasesList()
 
