@@ -20,9 +20,9 @@ class PSRCloudCommand:
 
 
 class PSRCloudCommandsList(List[PSRCloudCommand]):
-    def __init__(self):
+    def __init__(self, directory: str):
         super().__init__()
-        with open(os.path.join("psrcloud_commands.csv"), "r", encoding="utf-8") as f:
+        with open(os.path.join(directory, "psrcloud_commands.csv"), "r", encoding="utf-8") as f:
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]

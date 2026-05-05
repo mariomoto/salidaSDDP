@@ -119,10 +119,10 @@ class PSRIOCase:
 
 
 class PSRIOCasesList:
-    def __init__(self):
+    def __init__(self, directory: str):
 
         psrio_commands: defaultdict[str, list[str]] = defaultdict(list)
-        with open(os.path.join("psrio_commands.csv"), "r", encoding="utf-8") as f:
+        with open(os.path.join(directory, "psrio_commands.csv"), "r", encoding="utf-8") as f:
             _ = next(f)
             while line := f.readline().strip():
                 line = [item.strip() for item in line.split(",")]

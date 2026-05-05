@@ -4,6 +4,8 @@ import threading
 import PSRTools.PSRCloudCase as sc
 import PSRTools.PSRIOCase as sio
 import psr.cloud
+import sys
+from  utils import choose_directory_with_history
 
 
 def run(psrcloud_command: sc.PSRCloudCommand):
@@ -26,11 +28,10 @@ def run_then_download(psrcloud_command: sc.PSRCloudCommand):
 
 
 if __name__ == "__main__":
-    # tk.Tk().withdraw() # part of the import if you are not using other tkinter functions
-
-    # directory = askdirectory()
-
-    psrcloud_commands_list = sc.PSRCloudCommandsList()
+    directory = choose_directory_with_history()
+    if not directory:
+        sys.exit()
+    psrcloud_commands_list = sc.PSRCloudCommandsList(directory)
     threads = []
     for psrcloud_command in psrcloud_commands_list:
         match psrcloud_command.command:
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     for thread in threads:
         thread.join()
 
-    psrio_cases_list = sio.PSRIOCasesList()
+    psrio_cases_list = sio.PSRIOCasesList(directory)
 
     for psrio_case in psrio_cases_list.get_cases():
         psrio_case.run_psrio_commands()
