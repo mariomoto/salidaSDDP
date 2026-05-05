@@ -1,5 +1,3 @@
-import tkinter as tk
-from tkinter.filedialog import askdirectory
 import threading
 import PSRTools.PSRCloudCase as sc
 import PSRTools.PSRIOCase as sio

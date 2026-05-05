@@ -127,6 +127,7 @@ class PSRIOCasesList:
             while line := f.readline().strip():
                 line = [item.strip() for item in line.split(",")]
                 command, pathname, levels, spawn, file, agents = line
+                pathname = os.path.join(directory, pathname)
                 psrio_commands_strings = ",".join(
                     [command, levels, spawn, file, agents]
                 )

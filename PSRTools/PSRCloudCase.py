@@ -9,13 +9,14 @@ class PSRCloudCommand:
 
     def __init__(self, 
                  command: str, pathname: str, parent_id: str | None, 
-                 id: int, output_files: str
+                 id: int, output_files: str, optimized = "True"
         ):
         self.command = command
         self.casename = Path(pathname).name
         self.pathname = pathname
         self.parent_id = parent_id
         self.id = id
+        self.optimized = True if optimized.upper() == "TRUE" else False
         self.output_files = output_files
 
 
@@ -26,12 +27,13 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
-                command, pathname, parent_id, id, output_files = line
+                command, optimized, pathname, parent_id, id, output_files = line
                 parent_id = parent_id or None
                 id = int(id or "0")
+                pathname = os.path.join(directory, pathname)
                 self.append(
                     PSRCloudCommand(
-                        command, pathname, parent_id, id, output_files
+                        command, pathname, parent_id, id, output_files, optimized
                     )
                 )
 
@@ -49,7 +51,7 @@ class PSRCloudCase:
             program_version="17.3.12",
             name=self.psrcloud_command.casename,
             parent_case_id=self.psrcloud_command.parent_id,
-            price_optimized=True,
+            price_optimized=self.psrcloud_command.optimized,
             execution_type="Default",
             number_of_processes=64,
             memory_per_process_ratio="2:1",
@@ -58,18 +60,18 @@ class PSRCloudCase:
         status = None
         try:
             assert isinstance(self.case, psr.cloud.Case)
-            case_id=self.client.run_case(self.case)
-            self.psrcloud_command.id=case_id
+            case_id = self.client.run_case(self.case)
+            self.psrcloud_command.id = case_id
             status, status_msg = self.client.get_status(self.psrcloud_command.id)
 
-            num_seconds = 1800
-            start = time.monotonic()
+            poll_interval = 1800
+            start = time.monotonic() - poll_interval  # fire immediately on first iteration
             previous_status = status
             while status not in psr.cloud.status.FINISHED_STATUS:  # type: ignore
 
-                if time.monotonic() - start >= num_seconds:
-                    start = time.monotonic()
+                if time.monotonic() - start >= poll_interval:
                     status, status_msg = self.client.get_status(self.psrcloud_command.id)
+                    start = time.monotonic()  # reset AFTER the poll, not inside the branch that detects elapsed time
 
                 if status != previous_status:
                     print(

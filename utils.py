@@ -71,11 +71,10 @@ def choose_directory_with_history():
             root.destroy()
 
     def browse_new():
-        selected: dict[str, str | None] = {"path": None}
         root.withdraw()
         path = askdirectory()
         root.destroy()
-        selected["path"] = path if path else None
+        selected["path"] = path if path else None # pyright: ignore[reportArgumentType]
 
     btn_frame = tk.Frame(root)
     btn_frame.pack(fill="x", padx=12, pady=10)
