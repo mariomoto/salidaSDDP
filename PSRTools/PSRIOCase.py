@@ -135,6 +135,7 @@ class PSRIOCasesList:
 
         self.psrio_cases_list: List[PSRIOCase] = []
         for pathname, psrio_commands_strings in psrio_commands.items():
+            print(f"PSRIOCasesList: {PSRIOCase(pathname, psrio_commands_strings).pathname}.")
             self.psrio_cases_list.append(PSRIOCase(pathname, psrio_commands_strings))
 
     def get_cases(self) -> List[PSRIOCase]:

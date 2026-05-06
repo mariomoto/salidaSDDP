@@ -25,6 +25,7 @@ class PSRIOCommand():
         # keys = {gerter, gerhid, gerbat, gergnd,}
         psrio_object_type = DICT_PSRFILE_PSRIOOBJECT[self.file].object_type
         # if self.file == gerter: palnt_object = "ThermalPlant", etc.
+        print(f"bin_to_parquet: {psrio_object_type=}.")
         psrio_objects = self.study.get(psrio_object_type)
         assert isinstance(psrio_objects, list)
         if self.agents.strip() == '':
