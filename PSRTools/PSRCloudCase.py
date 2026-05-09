@@ -1,16 +1,23 @@
 from pathlib import Path
 from typing import List
-import psr.cloud
-import psr.cloud.status
+import datetime
 import time
 import os
+import psr.cloud
+import psr.cloud.status
+
 
 class PSRCloudCommand:
 
-    def __init__(self, 
-                 command: str, pathname: str, parent_id: str | None, 
-                 id: int, output_files: str, optimized = "True"
-        ):
+    def __init__(
+        self,
+        command: str,
+        pathname: str,
+        parent_id: str | None,
+        id: int,
+        output_files: str,
+        optimized="True",
+    ):
         self.command = command
         self.casename = Path(pathname).name
         self.pathname = pathname
@@ -23,7 +30,9 @@ class PSRCloudCommand:
 class PSRCloudCommandsList(List[PSRCloudCommand]):
     def __init__(self, directory: str):
         super().__init__()
-        with open(os.path.join(directory, "psrcloud_commands.csv"), "r", encoding="utf-8") as f:
+        with open(
+            os.path.join(directory, "psrcloud_commands.csv"), "r", encoding="utf-8"
+        ) as f:
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
@@ -46,17 +55,19 @@ class PSRCloudCase:
 
     def run_study(self):
         self.case = psr.cloud.Case(
+            name=self.psrcloud_command.casename,
             data_path=self.psrcloud_command.pathname,
             program="SDDP",
-            program_version="17.3.12",
-            name=self.psrcloud_command.casename,
-            parent_case_id=self.psrcloud_command.parent_id,
-            price_optimized=self.psrcloud_command.optimized,
-            execution_type="Default",
-            number_of_processes=64,
+            program_version="18.0.9rc",
+            execution_type="Operation Planning (Default)",
             memory_per_process_ratio="2:1",
+            price_optimized=self.psrcloud_command.optimized,
+            number_of_processes=64,
+            repository_duration=2,
+            budget="",
+            parent_case_id=self.psrcloud_command.parent_id,
         )
-        print(f"{__name__}: Study '{self.psrcloud_command.casename}' created.")
+        self.my_print(f"Study '{self.psrcloud_command.casename}' created.")
         status = None
         try:
             assert isinstance(self.case, psr.cloud.Case)
@@ -65,24 +76,36 @@ class PSRCloudCase:
             status, status_msg = self.client.get_status(self.psrcloud_command.id)
 
             poll_interval = 1800
-            start = time.monotonic() - poll_interval  # fire immediately on first iteration
+            start = (
+                time.monotonic() - poll_interval
+            )  # fire immediately on first iteration
             previous_status = status
             while status not in psr.cloud.status.FINISHED_STATUS:  # type: ignore
-
+                time.sleep(60)
+                status, status_msg = self.client.get_status(
+                    self.psrcloud_command.id, quiet=True
+                )
                 if time.monotonic() - start >= poll_interval:
-                    status, status_msg = self.client.get_status(self.psrcloud_command.id)
-                    start = time.monotonic()  # reset AFTER the poll, not inside the branch that detects elapsed time
+                    self.my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {status_msg}")
+                    start = (
+                        time.monotonic()
+                    )  # reset AFTER the poll, not inside the branch that detects elapsed time
 
                 if status != previous_status:
-                    print(
-                        f"Case {self.psrcloud_command.id} status changed from {previous_status} to {status}."
-                    )
+                    self.my_print(
+                        f"{self.psrcloud_command.casename}({self.psrcloud_command.id}) status changed from {previous_status} to {status}."
+                        )
                     previous_status = status
 
         except psr.cloud.CloudInputError as e:
-            print(f"Error running case: {e}")
+            self.my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): Error running case: {e}")
 
         return status
+
+    def my_print(self, msg: str):
+        now = datetime.datetime.now()
+        nowstr = now.strftime("%Y-%m-%d %H:%M:%S,") + f"{now.microsecond // 1000:03d}"
+        print(f"{nowstr} - {msg}")
 
     def download_files(self):
         if self.psrcloud_command.id:
@@ -95,5 +118,8 @@ class PSRCloudCase:
                     for ext in ["hdr", "bin"]
                 ]
                 self.client.download_results(
-                    self.psrcloud_command.id, self.psrcloud_command.pathname, output_files, []
+                    self.psrcloud_command.id,
+                    self.psrcloud_command.pathname,
+                    output_files,
+                    [],
                 )
