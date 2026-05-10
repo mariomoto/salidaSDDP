@@ -3,6 +3,8 @@ import os
 import sys
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
+from utils import my_print
+
 class PSRIOCommand():
     def __init__(
             self, study: psr.factory.Study, pathname: str, 
@@ -25,7 +27,7 @@ class PSRIOCommand():
         # keys = {gerter, gerhid, gerbat, gergnd,}
         psrio_object_type = DICT_PSRFILE_PSRIOOBJECT[self.file].object_type
         # if self.file == gerter: palnt_object = "ThermalPlant", etc.
-        print(f"bin_to_parquet: {psrio_object_type=}.")
+        my_print(f"bin_to_parquet: {psrio_object_type=}.")
         psrio_objects = self.study.get(psrio_object_type)
         assert isinstance(psrio_objects, list)
         if self.agents.strip() == '':
@@ -54,7 +56,7 @@ class PSRIOCommand():
                 options=load_options,
             )
         except psr.factory.api.FactoryException as e:
-            print(f"Factory Exception caught: {e}")
+            my_print(f"Factory Exception caught: {e}")
             print(self)
             # Add your custom error handling logic here
             sys.exit()
@@ -107,7 +109,7 @@ class PSRIOCommand():
             case "sum":
                 df_p_agents = df_p_agents.groupby(level_names).sum()
             case _:
-                print(f"Operation '{operation}' not found, falling back to 'sum'.")
+                my_print(f"Operation '{operation}' not found, falling back to 'sum'.")
                 df_p_agents = df_p_agents.groupby(level_names).sum()
 
         if 'scenario' in level_names and "S" in self.levels:

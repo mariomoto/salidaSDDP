@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import tkinter as tk
@@ -100,3 +101,9 @@ def choose_directory_with_history():
 if __name__ == "__main__":
     directory = choose_directory_with_history()
     print("Chosen directory:", directory)
+
+
+def my_print(msg: str):
+    now = datetime.datetime.now()
+    nowstr = now.strftime("%Y-%m-%d %H:%M:%S,") + f"{now.microsecond // 1000:03d}"
+    print(f"{nowstr} - {msg}")

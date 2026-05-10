@@ -1,10 +1,10 @@
 from pathlib import Path
 from typing import List
-import datetime
 import time
 import os
 import psr.cloud
 import psr.cloud.status
+from utils import my_print
 
 
 class PSRCloudCommand:
@@ -67,7 +67,7 @@ class PSRCloudCase:
             budget="",
             parent_case_id=self.psrcloud_command.parent_id,
         )
-        self.my_print(f"Study '{self.psrcloud_command.casename}' created.")
+        my_print(f"Study '{self.psrcloud_command.casename}' created.")
         status = None
         try:
             assert isinstance(self.case, psr.cloud.Case)
@@ -86,26 +86,21 @@ class PSRCloudCase:
                     self.psrcloud_command.id, quiet=True
                 )
                 if time.monotonic() - start >= poll_interval:
-                    self.my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {status_msg}")
+                    my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {status_msg}")
                     start = (
                         time.monotonic()
                     )  # reset AFTER the poll, not inside the branch that detects elapsed time
 
                 if status != previous_status:
-                    self.my_print(
+                    my_print(
                         f"{self.psrcloud_command.casename}({self.psrcloud_command.id}) status changed from {previous_status} to {status}."
                         )
                     previous_status = status
 
         except psr.cloud.CloudInputError as e:
-            self.my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): Error running case: {e}")
+            my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): Error running case: {e}")
 
         return status
-
-    def my_print(self, msg: str):
-        now = datetime.datetime.now()
-        nowstr = now.strftime("%Y-%m-%d %H:%M:%S,") + f"{now.microsecond // 1000:03d}"
-        print(f"{nowstr} - {msg}")
 
     def download_files(self):
         if self.psrcloud_command.id:

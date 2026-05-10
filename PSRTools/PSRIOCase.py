@@ -8,6 +8,7 @@ from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 from PSRTools.Parameters import LIST_PSRIOOBJECT
 from PSRTools.Parameters import PSRIO_COMMANDS
 from PSRTools.PSRIOCommand import PSRIOCommand
+from utils import my_print
 
 
 class PSRIOCase:
@@ -87,7 +88,7 @@ class PSRIOCase:
             current_method = inspect.currentframe().f_code.co_name # pyright: ignore[reportOptionalMemberAccess]
             current_class = self.__class__.__name__
             prefix = f"{current_class}.{current_method}"
-            print(f"""
+            my_print(f"""
 {prefix}: Factory Exception caught: {e}
 {prefix}: Pathname: {self.pathname}.
 {prefix}: Plant: {plant.name.strip()}.
@@ -135,7 +136,7 @@ class PSRIOCasesList:
 
         self.psrio_cases_list: List[PSRIOCase] = []
         for pathname, psrio_commands_strings in psrio_commands.items():
-            print(f"PSRIOCasesList: {PSRIOCase(pathname, psrio_commands_strings).pathname}.")
+            my_print(f"PSRIOCasesList: {PSRIOCase(pathname, psrio_commands_strings).pathname}.")
             self.psrio_cases_list.append(PSRIOCase(pathname, psrio_commands_strings))
 
     def get_cases(self) -> List[PSRIOCase]:
