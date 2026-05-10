@@ -24,13 +24,14 @@ def run_then_download(client: psr.cloud.Client, psrcloud_command: sc.PSRCloudCom
 
 if __name__ == "__main__":
 
-    client = psr.cloud.Client(quiet = True)
-
-    psr.factory.set_setting("PASSKEY", "1:MAmaro@colbun.cl:2026-07-07.w45LxCG5KtB_ArtYb8e9EKfxcroefiPCAYC6TlJ-OGF0sYn6LbUn78KdirsIKqA19iczOSLhW5BMvJ9Et-MfBw")
-
     directory = choose_directory_with_history()
     if not directory:
         sys.exit()
+
+    client = psr.cloud.Client()
+
+    psr.factory.set_setting("PASSKEY", "1:MAmaro@colbun.cl:2026-07-07.w45LxCG5KtB_ArtYb8e9EKfxcroefiPCAYC6TlJ-OGF0sYn6LbUn78KdirsIKqA19iczOSLhW5BMvJ9Et-MfBw")
+
     psrcloud_commands_list = sc.PSRCloudCommandsList(directory)
     threads = []
     for psrcloud_command in psrcloud_commands_list:
