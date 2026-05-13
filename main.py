@@ -5,6 +5,7 @@ import psr.cloud
 import psr.factory
 import sys
 from  utils import choose_directory_with_history
+import ctypes
 
 
 def run(client: psr.cloud.Client, psrcloud_command: sc.PSRCloudCommand):
@@ -25,8 +26,13 @@ def run_then_download(client: psr.cloud.Client, psrcloud_command: sc.PSRCloudCom
 if __name__ == "__main__":
 
     directory = choose_directory_with_history()
+
     if not directory:
         sys.exit()
+
+    buf = ctypes.create_unicode_buffer(512)
+    ctypes.windll.kernel32.GetShortPathNameW(directory, buf, 512)
+    directory = buf.value
 
     client = psr.cloud.Client()
 
