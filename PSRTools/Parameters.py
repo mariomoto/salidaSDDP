@@ -23,6 +23,10 @@ DICT_PSRFILE_PSRIOOBJECT = {
     "coster": PsrioObjectInfo("ThermalPlant", "coster", "sum", 1),
     "cosarr": PsrioObjectInfo("ThermalPlant", "cosarr", "sum", 1),
     "trstup": PsrioObjectInfo("ThermalPlant", "trstup", "mean", 1),
+    "cotfin": PsrioObjectInfo("HydroPlant", "cotfin", "mean", 1),
+    "volfin": PsrioObjectInfo("HydroPlant", "volfin", "mean", 1),
+    "qturbi": PsrioObjectInfo("HydroPlant", "qturbi", "mean", 1),
+    "qverti": PsrioObjectInfo("HydroPlant", "qverti", "mean", 1)
 }
 
 LIST_PSRIOOBJECT = [

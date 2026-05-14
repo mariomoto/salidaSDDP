@@ -12,11 +12,12 @@ class PSRCloudCommand:
     def __init__(
         self,
         command: str,
+        version: str,
+        optimized: str,
         pathname: str,
         parent_id: str | None,
         id: int,
         output_files: str,
-        optimized="True",
     ):
         self.command = command
         self.casename = Path(pathname).name
@@ -25,6 +26,7 @@ class PSRCloudCommand:
         self.id = id
         self.optimized = True if optimized.upper() == "TRUE" else False
         self.output_files = output_files
+        self.version = version
 
 
 class PSRCloudCommandsList(List[PSRCloudCommand]):
@@ -36,13 +38,13 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
-                command, optimized, pathname, parent_id, id, output_files = line
+                command, version, optimized, pathname, parent_id, id, output_files = line
                 parent_id = parent_id or None
                 id = int(id or "0")
                 pathname = os.path.join(directory, pathname)
                 self.append(
                     PSRCloudCommand(
-                        command, pathname, parent_id, id, output_files, optimized
+                        command, version, optimized, pathname, parent_id, id, output_files
                     )
                 )
 
@@ -54,11 +56,39 @@ class PSRCloudCase:
         self.case: psr.cloud.Case | None = None
 
     def run_study(self):
+        try:
+            status = self.try_run_study()
+        except psr.cloud.CloudError as e:
+            my_print(f"{self.psrcloud_command.casename}: {e}")
+            self.psrcloud_command.optimized = False
+            my_print(f"{self.psrcloud_command.casename}: Se ejecuta sin optimización de precio.")
+            status = self.try_run_study()
+
+        return status
+
+    def download_files(self):
+        if self.psrcloud_command.id:
+            status, status_msg = self.client.get_status(self.psrcloud_command.id)
+            if str(status) == "ExecutionStatus.SUCCESS":
+                output_files = self.psrcloud_command.output_files
+                output_files = [
+                    f"{name}.{ext}"
+                    for name in output_files.split(";")
+                    for ext in ["hdr", "bin"]
+                ]
+                self.client.download_results(
+                    self.psrcloud_command.id,
+                    self.psrcloud_command.pathname,
+                    output_files,
+                    [],
+                )
+
+    def try_run_study(self):
         self.case = psr.cloud.Case(
             name=self.psrcloud_command.casename,
             data_path=self.psrcloud_command.pathname,
             program="SDDP",
-            program_version="18.0.9rc",
+            program_version=self.psrcloud_command.version,
             execution_type="Operation Planning (Default)",
             memory_per_process_ratio="2:1",
             price_optimized=self.psrcloud_command.optimized,
@@ -96,25 +126,5 @@ class PSRCloudCase:
                         f"{self.psrcloud_command.casename}({self.psrcloud_command.id}) status changed from {previous_status} to {status}."
                         )
                     previous_status = status
-
         except psr.cloud.CloudInputError as e:
-            my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): Error running case: {e}")
-
-        return status
-
-    def download_files(self):
-        if self.psrcloud_command.id:
-            status, status_msg = self.client.get_status(self.psrcloud_command.id)
-            if str(status) == "ExecutionStatus.SUCCESS":
-                output_files = self.psrcloud_command.output_files
-                output_files = [
-                    f"{name}.{ext}"
-                    for name in output_files.split(";")
-                    for ext in ["hdr", "bin"]
-                ]
-                self.client.download_results(
-                    self.psrcloud_command.id,
-                    self.psrcloud_command.pathname,
-                    output_files,
-                    [],
-                )
+            my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {e}")
