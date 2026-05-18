@@ -1,3 +1,4 @@
+import os
 import threading
 import PSRTools.PSRCloudCase as sc
 import PSRTools.PSRIOCase as sio
@@ -35,8 +36,10 @@ if __name__ == "__main__":
     directory = buf.value
 
     client = psr.cloud.Client()
+    with open(os.path.join("c:\\", "PSR", "passkey.txt"), "r") as f:
+        passkey = f.read().strip()
 
-    psr.factory.set_setting("PASSKEY", "1:MAmaro@colbun.cl:2026-07-07.w45LxCG5KtB_ArtYb8e9EKfxcroefiPCAYC6TlJ-OGF0sYn6LbUn78KdirsIKqA19iczOSLhW5BMvJ9Et-MfBw")
+    psr.factory.set_setting("PASSKEY", passkey)
 
     psrcloud_commands_list = sc.PSRCloudCommandsList(directory)
     threads = []
