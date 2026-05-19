@@ -1,3 +1,4 @@
+import ctypes
 import datetime
 import json
 import os
@@ -107,3 +108,9 @@ def my_print(msg: str):
     now = datetime.datetime.now()
     nowstr = now.strftime("%Y-%m-%d %H:%M:%S,") + f"{now.microsecond // 1000:03d}"
     print(f"{nowstr} - {msg}")
+
+def convert_to_short_path(directory: str) -> str:
+    buf = ctypes.create_unicode_buffer(512)
+    ctypes.windll.kernel32.GetShortPathNameW(directory, buf, 512)
+    directory = buf.value
+    return directory

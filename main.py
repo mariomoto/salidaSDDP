@@ -5,7 +5,7 @@ import PSRTools.PSRIOCase as sio
 import psr.cloud
 import psr.factory
 import sys
-from  utils import choose_directory_with_history
+from  utils import choose_directory_with_history, convert_to_short_path
 import ctypes
 
 
@@ -31,9 +31,7 @@ if __name__ == "__main__":
     if not directory:
         sys.exit()
 
-    buf = ctypes.create_unicode_buffer(512)
-    ctypes.windll.kernel32.GetShortPathNameW(directory, buf, 512)
-    directory = buf.value
+    directory = convert_to_short_path(directory)
 
     client = psr.cloud.Client()
     with open(os.path.join("c:\\", "PSR", "passkey.txt"), "r") as f:
