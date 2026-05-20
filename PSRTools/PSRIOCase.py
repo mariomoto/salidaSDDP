@@ -8,18 +8,19 @@ from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 from PSRTools.Parameters import LIST_PSRIOOBJECT
 from PSRTools.Parameters import PSRIO_COMMANDS
 from PSRTools.PSRIOCommand import PSRIOCommand
-from utils import my_print
+from utils import my_print, convert_to_short_path
 
 
 class PSRIOCase:
 
-    def __init__(self, pathname: str, psrio_commands_strings: List[str]):
+    def __init__(self, output_folder: str, pathname: str, psrio_commands_strings: List[str]):
+        self.output_folder = output_folder
         self.pathname = pathname
         self.study: psr.factory.Study = psr.factory.load_study(pathname)
         self.psrio_commands: defaultdict[str, List[PSRIOCommand]] = defaultdict(list)
 
         self.gen_bus_dict = defaultdict(str)
-        gen_bus_filepath = os.path.join(self.pathname, "gen_bus.csv")
+        gen_bus_filepath = os.path.join(self.output_folder, "gen_bus.csv")
 
         with open(gen_bus_filepath, "w", encoding="utf-8") as f:
             f.write("genName,genCode,busName,busCode,tech\n")
@@ -112,7 +113,7 @@ class PSRIOCase:
                 )
         for key, df in df_dict.items():
             parquet_pathname = os.path.join(
-                self.pathname, key + ".parquet"
+                self.output_folder, key + ".parquet"
             )
             if os.path.exists(parquet_pathname):
                 os.remove(parquet_pathname)
@@ -120,15 +121,17 @@ class PSRIOCase:
 
 
 class PSRIOCasesList:
-    def __init__(self, directory: str):
+    def __init__(self, output_folder: str):
 
         psrio_commands: defaultdict[str, list[str]] = defaultdict(list)
-        with open(os.path.join(directory, "psrio_commands.csv"), "r", encoding="utf-8") as f:
+        with open(os.path.join(output_folder, "psrio_commands.csv"), "r", encoding="latin-1") as f:
             _ = next(f)
             while line := f.readline().strip():
                 line = [item.strip() for item in line.split(",")]
                 command, pathname, levels, spawn, file, agents = line
-                pathname = os.path.join(directory, pathname)
+                if not os.path.isabs(pathname):
+                    raise ValueError(f"pathname must be an absolute path, got: {pathname!r}")
+                pathname = convert_to_short_path(pathname)
                 psrio_commands_strings = ",".join(
                     [command, levels, spawn, file, agents]
                 )
@@ -136,8 +139,8 @@ class PSRIOCasesList:
 
         self.psrio_cases_list: List[PSRIOCase] = []
         for pathname, psrio_commands_strings in psrio_commands.items():
-            my_print(f"PSRIOCasesList: {PSRIOCase(pathname, psrio_commands_strings).pathname}.")
-            self.psrio_cases_list.append(PSRIOCase(pathname, psrio_commands_strings))
+            my_print(f"PSRIOCasesList: {pathname}.")
+            self.psrio_cases_list.append(PSRIOCase(output_folder, pathname, psrio_commands_strings))
 
     def get_cases(self) -> List[PSRIOCase]:
         return self.psrio_cases_list

@@ -4,7 +4,7 @@ import time
 import os
 import psr.cloud
 import psr.cloud.status
-from utils import my_print
+from utils import my_print, convert_to_short_path
 
 
 class PSRCloudCommand:
@@ -30,10 +30,10 @@ class PSRCloudCommand:
 
 
 class PSRCloudCommandsList(List[PSRCloudCommand]):
-    def __init__(self, directory: str):
+    def __init__(self, output_folder: str):
         super().__init__()
         with open(
-            os.path.join(directory, "psrcloud_commands.csv"), "r", encoding="utf-8"
+            os.path.join(output_folder, "psrcloud_commands.csv"), "r", encoding="latin-1"
         ) as f:
             _ = next(f)
             while line := f.readline():
@@ -41,7 +41,9 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                 command, version, optimized, pathname, parent_id, id, output_files = line
                 parent_id = parent_id or None
                 id = int(id or "0")
-                pathname = os.path.join(directory, pathname)
+                if not os.path.isabs(pathname):
+                    raise ValueError(f"pathname must be an absolute path, got: {pathname!r}")
+                pathname = convert_to_short_path(pathname)
                 self.append(
                     PSRCloudCommand(
                         command, version, optimized, pathname, parent_id, id, output_files
