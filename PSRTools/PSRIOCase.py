@@ -39,6 +39,11 @@ class PSRIOCase:
                             f"{plant_name},{plant.code},{bus.name.strip()},{bus.code},{tech}\n"
                         )
                         self.gen_bus_dict[plant.name.strip()] = bus.name.strip()
+        sddp_filepath = os.path.join(self.output_folder, "study.csv")
+        with open(sddp_filepath, "w", encoding="utf-8") as f:
+            f.write(f"InitialYear, {self.study.get('InitialYear')}\n")
+            f.write(f"NumberStages, {self.study.get('NumberStages')}\n")
+            f.write(f"NumberSimulations, {self.study.get('NumberSimulations')}\n")
 
         for string in psrio_commands_strings:
             command, levels, spawn, file, agents = string.split(",")
