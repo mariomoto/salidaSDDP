@@ -70,8 +70,8 @@ class PSRIOCase:
         )
         psrio_object_filename = (
             DICT_PSRFILE_PSRIOOBJECT[psrio_command.file].object_filename
-            + levels
-            + spawn
+            + psrio_command.levels
+            + psrio_command.spawn
         )
         self.psrio_commands[psrio_object_filename].append(psrio_command)
 

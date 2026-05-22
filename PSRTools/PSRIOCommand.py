@@ -13,7 +13,7 @@ class PSRIOCommand():
         self.study = study
         self.pathname = pathname
         self.command = command
-        self.levels = levels
+        self.levels = levels if levels else 'X'
         self.spawn = spawn
         self.file = file
         self.agents = agents
@@ -77,7 +77,7 @@ class PSRIOCommand():
         return df_p_agents
 
 
-    def group_by(self, df_p_agents) -> pd.DataFrame:
+    def group_by(self, df_p_agents: pd.DataFrame) -> pd.DataFrame:
 
         days = (df_p_agents.index.get_level_values('hour') - 1) // 24 + 1
         hours = (df_p_agents.index.get_level_values('hour') - 1) % 24
@@ -96,24 +96,42 @@ class PSRIOCommand():
 
         df_p_agents.index = pd.MultiIndex.from_arrays(level_arrays, names=level_names)
 
+        groupby_levels = level_names.copy()
         for level in self.levels:
             match level:
-                case "M": level_names.remove("month")
-                case "D": level_names.remove("day")
-                case "H": level_names.remove("hour")
+                case "M": groupby_levels.remove("month")
+                case "D": groupby_levels.remove("day")
+                case "H": groupby_levels.remove("hour")
 
         operation = DICT_PSRFILE_PSRIOOBJECT[self.file].operation
         match operation:
             case "mean":
-                df_p_agents = df_p_agents.groupby(level_names).mean()
+                df_p_agents = df_p_agents.groupby(groupby_levels).mean()
             case "sum":
-                df_p_agents = df_p_agents.groupby(level_names).sum()
+                df_p_agents = df_p_agents.groupby(groupby_levels).sum()
             case _:
                 my_print(f"Operation '{operation}' not found, falling back to 'sum'.")
-                df_p_agents = df_p_agents.groupby(level_names).sum()
+                df_p_agents = df_p_agents.groupby(groupby_levels).sum()
 
-        if 'scenario' in level_names and "S" in self.levels:
-            level_names.remove("scenario") 
-            df_p_agents = df_p_agents.groupby(level_names).mean()
+        if 'scenario' in groupby_levels and "S" in self.levels:
+            groupby_levels.remove("scenario")
+            df_p_agents = df_p_agents.groupby(groupby_levels).mean()
+
+        # Re-insert grouped-away levels as constant values
+        for level in self.levels:
+            match level:
+                case "M":
+                    df_p_agents["month"] = 1
+                    df_p_agents = df_p_agents.set_index("month", append=True)
+                case "D":
+                    df_p_agents["day"] = 1
+                    df_p_agents = df_p_agents.set_index("day", append=True)
+                case "H":
+                    df_p_agents["hour"] = 1
+                    df_p_agents = df_p_agents.set_index("hour", append=True)
+
+        # Reorder index levels to match original level_names order
+        final_levels = [l for l in level_names if l in df_p_agents.index.names]
+        df_p_agents = df_p_agents.reorder_levels(final_levels)
 
         return df_p_agents
