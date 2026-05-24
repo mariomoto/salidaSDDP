@@ -122,7 +122,10 @@ class PSRIOCase:
             )
             if os.path.exists(parquet_pathname):
                 os.remove(parquet_pathname)
-            df.to_parquet(parquet_pathname)
+            try:
+                df.loc[:, ~df.columns.duplicated()].to_parquet(parquet_pathname)
+            except ValueError as e:
+                my_print(f"PSRIOCase.run_psrio_commands: Exception caught while saving {parquet_pathname}: {e}")
 
 
 class PSRIOCasesList:

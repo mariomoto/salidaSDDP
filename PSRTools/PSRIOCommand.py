@@ -56,7 +56,7 @@ class PSRIOCommand():
                 options=load_options,
             )
         except psr.factory.api.FactoryException as e:
-            my_print(f"Factory Exception caught: {e}")
+            my_print(f"PSRIOCommand.bin_to_parquet: {e}")
             print(self)
             # Add your custom error handling logic here
             sys.exit()
