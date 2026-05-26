@@ -33,20 +33,32 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
     def __init__(self, output_folder: str):
         super().__init__()
         with open(
-            os.path.join(output_folder, "psrcloud_commands.csv"), "r", encoding="latin-1"
+            os.path.join(output_folder, "psrcloud_commands.csv"),
+            "r",
+            encoding="latin-1",
         ) as f:
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
-                command, version, optimized, pathname, parent_id, id, output_files = line
+                command, version, optimized, pathname, parent_id, id, output_files = (
+                    line
+                )
                 parent_id = parent_id or None
                 id = int(id or "0")
                 if not os.path.isabs(pathname):
-                    raise ValueError(f"pathname must be an absolute path, got: {pathname!r}")
+                    raise ValueError(
+                        f"pathname must be an absolute path, got: {pathname!r}"
+                    )
                 pathname = convert_to_short_path(pathname)
                 self.append(
                     PSRCloudCommand(
-                        command, version, optimized, pathname, parent_id, id, output_files
+                        command,
+                        version,
+                        optimized,
+                        pathname,
+                        parent_id,
+                        id,
+                        output_files,
                     )
                 )
 
@@ -63,7 +75,9 @@ class PSRCloudCase:
         except psr.cloud.CloudError as e:
             my_print(f"{self.psrcloud_command.casename}: {e}")
             self.psrcloud_command.optimized = False
-            my_print(f"{self.psrcloud_command.casename}: Se ejecuta sin optimización de precio.")
+            my_print(
+                f"{self.psrcloud_command.casename}: Se ejecuta sin optimización de precio."
+            )
             status = self.try_run_study()
 
         return status
@@ -118,7 +132,9 @@ class PSRCloudCase:
                     self.psrcloud_command.id, quiet=True
                 )
                 if time.monotonic() - start >= poll_interval:
-                    my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {status_msg}")
+                    my_print(
+                        f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {status_msg}"
+                    )
                     start = (
                         time.monotonic()
                     )  # reset AFTER the poll, not inside the branch that detects elapsed time
@@ -126,7 +142,9 @@ class PSRCloudCase:
                 if status != previous_status:
                     my_print(
                         f"{self.psrcloud_command.casename}({self.psrcloud_command.id}) status changed from {previous_status} to {status}."
-                        )
+                    )
                     previous_status = status
         except psr.cloud.CloudInputError as e:
-            my_print(f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {e}")
+            my_print(
+                f"{self.psrcloud_command.casename}({self.psrcloud_command.id}): {e}"
+            )

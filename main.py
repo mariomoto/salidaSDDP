@@ -5,7 +5,7 @@ import PSRTools.PSRIOCase as sio
 import psr.cloud
 import psr.factory
 import sys
-from  utils import choose_directory_with_history, convert_to_short_path
+from utils import choose_directory_with_history, convert_to_short_path
 import ctypes
 
 
@@ -33,7 +33,6 @@ if __name__ == "__main__":
 
     output_folder = convert_to_short_path(output_folder)
 
-
     with open(os.path.join("c:\\", "PSR", "passkey.txt"), "r") as f:
         passkey = f.read().strip()
 
@@ -47,22 +46,39 @@ if __name__ == "__main__":
 
     client = (
         psr.cloud.Client()
-        if any(cmd.command in {"Run", "RunDownload", "Download"} for cmd in psrcloud_commands_list)
+        if any(
+            cmd.command in {"Run", "RunDownload", "Download"}
+            for cmd in psrcloud_commands_list
+        )
         else None
     )
     threads = []
     for psrcloud_command in psrcloud_commands_list:
         match psrcloud_command.command:
             case "Run":
-                thread = threading.Thread(target=run, args=(client, psrcloud_command,))
+                thread = threading.Thread(
+                    target=run,
+                    args=(
+                        client,
+                        psrcloud_command,
+                    ),
+                )
                 thread.start()
                 threads.append(thread)
             case "RunDownload":
-                thread = threading.Thread(target=run_then_download, args=(client, psrcloud_command,))
+                thread = threading.Thread(
+                    target=run_then_download,
+                    args=(
+                        client,
+                        psrcloud_command,
+                    ),
+                )
                 thread.start()
                 threads.append(thread)
             case "Download":
-                download(client, psrcloud_command) # pyright: ignore[reportArgumentType]
+                download(
+                    client, psrcloud_command
+                )  # pyright: ignore[reportArgumentType]
 
     for thread in threads:
         thread.join()

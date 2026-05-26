@@ -13,7 +13,9 @@ from utils import my_print, convert_to_short_path
 
 class PSRIOCase:
 
-    def __init__(self, output_folder: str, pathname: str, psrio_commands_strings: List[str]):
+    def __init__(
+        self, output_folder: str, pathname: str, psrio_commands_strings: List[str]
+    ):
         self.output_folder = output_folder
         self.pathname = pathname
         self.study: psr.factory.Study = psr.factory.load_study(pathname)
@@ -31,10 +33,10 @@ class PSRIOCase:
                     bus = self.get_bus(plant)
                     if isinstance(bus, psr.factory.api.DataObject):
                         plant_name = plant.name.strip()
-                        if plant_name[3] == '.':
+                        if plant_name[3] == ".":
                             tech = plant_name[0:3]
                         else:
-                            tech = 'HID'
+                            tech = "HID"
                         f.write(
                             f"{plant_name},{plant.code},{bus.name.strip()},{bus.code},{tech}\n"
                         )
@@ -60,9 +62,7 @@ class PSRIOCase:
                             pathname, command, levels, "_s", spawn_file, spawn_agents
                         )
 
-                self.add_psrio_command(
-                    pathname, command, levels, "", file, agents
-                )
+                self.add_psrio_command(pathname, command, levels, "", file, agents)
 
     def add_psrio_command(self, pathname, command, levels, spawn, file, agents) -> None:
         psrio_command = PSRIOCommand(
@@ -74,7 +74,6 @@ class PSRIOCase:
             + psrio_command.spawn
         )
         self.psrio_commands[psrio_object_filename].append(psrio_command)
-
 
     def get_bus(self, plant) -> psr.factory.DataObject:
         """Safely get RefBus from plant, trying generators first then direct."""
@@ -91,7 +90,9 @@ class PSRIOCase:
         try:
             return plant.get("RefBus")
         except Exception as e:
-            current_method = inspect.currentframe().f_code.co_name # pyright: ignore[reportOptionalMemberAccess]
+            current_method = (
+                inspect.currentframe().f_code.co_name
+            )  # pyright: ignore[reportOptionalMemberAccess]
             current_class = self.__class__.__name__
             prefix = f"{current_class}.{current_method}"
             my_print(f"""
@@ -113,32 +114,36 @@ class PSRIOCase:
         for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
             for psrio_command in psrio_command_list:
                 df_dict[psrio_object_filename] = pd.concat(
-                    [df_dict[psrio_object_filename], psrio_command.bin_to_parquet()], 
-                    axis=1
+                    [df_dict[psrio_object_filename], psrio_command.bin_to_parquet()],
+                    axis=1,
                 )
         for key, df in df_dict.items():
-            parquet_pathname = os.path.join(
-                self.output_folder, key + ".parquet"
-            )
+            parquet_pathname = os.path.join(self.output_folder, key + ".parquet")
             if os.path.exists(parquet_pathname):
                 os.remove(parquet_pathname)
             try:
                 df.loc[:, ~df.columns.duplicated()].to_parquet(parquet_pathname)
             except ValueError as e:
-                my_print(f"PSRIOCase.run_psrio_commands: Exception caught while saving {parquet_pathname}: {e}")
+                my_print(
+                    f"PSRIOCase.run_psrio_commands: Exception caught while saving {parquet_pathname}: {e}"
+                )
 
 
 class PSRIOCasesList:
     def __init__(self, output_folder: str):
 
         psrio_commands: defaultdict[str, list[str]] = defaultdict(list)
-        with open(os.path.join(output_folder, "psrio_commands.csv"), "r", encoding="latin-1") as f:
+        with open(
+            os.path.join(output_folder, "psrio_commands.csv"), "r", encoding="latin-1"
+        ) as f:
             _ = next(f)
             while line := f.readline().strip():
                 line = [item.strip() for item in line.split(",")]
                 command, pathname, levels, spawn, file, agents = line
                 if not os.path.isabs(pathname):
-                    raise ValueError(f"pathname must be an absolute path, got: {pathname!r}")
+                    raise ValueError(
+                        f"pathname must be an absolute path, got: {pathname!r}"
+                    )
                 pathname = convert_to_short_path(pathname)
                 psrio_commands_strings = ",".join(
                     [command, levels, spawn, file, agents]
@@ -148,7 +153,9 @@ class PSRIOCasesList:
         self.psrio_cases_list: List[PSRIOCase] = []
         for pathname, psrio_commands_strings in psrio_commands.items():
             my_print(f"PSRIOCasesList: {pathname}.")
-            self.psrio_cases_list.append(PSRIOCase(output_folder, pathname, psrio_commands_strings))
+            self.psrio_cases_list.append(
+                PSRIOCase(output_folder, pathname, psrio_commands_strings)
+            )
 
     def get_cases(self) -> List[PSRIOCase]:
         return self.psrio_cases_list
