@@ -91,8 +91,8 @@ class PSRIOCase:
             return plant.get("RefBus")
         except Exception as e:
             current_method = (
-                inspect.currentframe().f_code.co_name
-            )  # pyright: ignore[reportOptionalMemberAccess]
+                inspect.currentframe().f_code.co_name # pyright: ignore[reportOptionalMemberAccess]
+            )  
             current_class = self.__class__.__name__
             prefix = f"{current_class}.{current_method}"
             my_print(f"""
