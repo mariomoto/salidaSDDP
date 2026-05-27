@@ -36,4 +36,4 @@ LIST_PSRIOOBJECT = [
     "ThermalPlant",
 ]
 
-PSRIO_COMMANDS = ["Parquet"]
+PSRIO_COMMANDS = ["parquet", "csv"]

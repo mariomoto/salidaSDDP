@@ -49,7 +49,7 @@ class PSRIOCase:
 
         for string in psrio_commands_strings:
             command, levels, spawn, file, agents = string.split(",")
-            if command in PSRIO_COMMANDS:
+            if command.lower() in PSRIO_COMMANDS:
                 if spawn.strip():
                     spawn_list = [spw.strip() for spw in spawn.strip().split(";")]
                     for spw in spawn_list:
@@ -72,6 +72,8 @@ class PSRIOCase:
             DICT_PSRFILE_PSRIOOBJECT[psrio_command.file].object_filename
             + psrio_command.levels
             + psrio_command.spawn
+            + "."
+            + psrio_command.command.lower()
         )
         self.psrio_commands[psrio_object_filename].append(psrio_command)
 
@@ -114,18 +116,19 @@ class PSRIOCase:
         for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
             for psrio_command in psrio_command_list:
                 df_dict[psrio_object_filename] = pd.concat(
-                    [df_dict[psrio_object_filename], psrio_command.bin_to_parquet()],
+                    [df_dict[psrio_object_filename], psrio_command.process_bin_to_dataframe()],
                     axis=1,
                 )
         for key, df in df_dict.items():
-            parquet_pathname = os.path.join(self.output_folder, key + ".parquet")
-            if os.path.exists(parquet_pathname):
-                os.remove(parquet_pathname)
+            filepath = os.path.join(self.output_folder, key)
+            if os.path.exists(filepath):
+                os.remove(filepath)
             try:
-                df.loc[:, ~df.columns.duplicated()].to_parquet(parquet_pathname)
+                psrio_command = self.psrio_commands[key][0]
+                psrio_command.save_dataframe(df.loc[:, ~df.columns.duplicated()], filepath)
             except ValueError as e:
                 my_print(
-                    f"PSRIOCase.run_psrio_commands: Exception caught while saving {parquet_pathname}: {e}"
+                    f"PSRIOCase.run_psrio_commands: Exception caught while saving {filepath}: {e}"
                 )
 
 

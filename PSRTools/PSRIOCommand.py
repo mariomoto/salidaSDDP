@@ -30,7 +30,7 @@ class PSRIOCommand:
     def __repr__(self):
         return f"PSRIOCommand(command={self.command}, levels={self.levels}, spawn={self.spawn}, file={self.file}, agents={self.agents})"
 
-    def bin_to_parquet(self) -> pd.DataFrame:
+    def process_bin_to_dataframe(self) -> pd.DataFrame:
 
         # keys = {gerter, gerhid, gerbat, gergnd,}
         psrio_object_type = DICT_PSRFILE_PSRIOOBJECT[self.file].object_type
@@ -79,6 +79,15 @@ class PSRIOCommand:
         df_p_agents /= factor
 
         return df_p_agents
+
+    def save_dataframe(self, df: pd.DataFrame, filepath: str) -> None:
+        match self.command.lower():
+            case "parquet":
+                df.to_parquet(filepath)
+            case "csv":
+                df.to_csv(filepath)
+            case _:
+                raise ValueError(f"Unsupported format: {self.command!r}")
 
     def group_by(self, df_p_agents: pd.DataFrame) -> pd.DataFrame:
 
