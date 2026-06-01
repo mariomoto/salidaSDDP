@@ -14,14 +14,14 @@ class PSRCloudCommand:
         command: str,
         version: str,
         optimized: str,
-        pathname: str,
+        psr_study_path: str,
         parent_id: str | None,
         id: int,
         output_files: str,
     ):
         self.command = command
-        self.casename = Path(pathname).name
-        self.pathname = pathname
+        self.casename = Path(psr_study_path).name
+        self.pathname = psr_study_path
         self.parent_id = parent_id
         self.id = id
         self.optimized = True if optimized.upper() == "TRUE" else False
@@ -40,22 +40,28 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
             _ = next(f)
             while line := f.readline():
                 line = [item.strip() for item in line.split(",")]
-                command, version, optimized, pathname, parent_id, id, output_files = (
-                    line
-                )
+                (
+                    command,
+                    version,
+                    optimized,
+                    psr_study_path,
+                    parent_id,
+                    id,
+                    output_files,
+                ) = line
                 parent_id = parent_id or None
                 id = int(id or "0")
-                if not os.path.isabs(pathname):
+                if not os.path.isabs(psr_study_path):
                     raise ValueError(
-                        f"pathname must be an absolute path, got: {pathname!r}"
+                        f"pathname must be an absolute path, got: {psr_study_path!r}"
                     )
-                pathname = convert_to_short_path(pathname)
+                psr_study_path = convert_to_short_path(psr_study_path)
                 self.append(
                     PSRCloudCommand(
                         command,
                         version,
                         optimized,
-                        pathname,
+                        psr_study_path,
                         parent_id,
                         id,
                         output_files,
