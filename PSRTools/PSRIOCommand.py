@@ -112,6 +112,8 @@ class PSRIOCommand:
         groupby_levels = level_names.copy()
         for level in self.levels:
             match level:
+                case "Y":
+                    groupby_levels.remove("year")
                 case "M":
                     groupby_levels.remove("month")
                 case "D":
@@ -136,6 +138,9 @@ class PSRIOCommand:
         # Re-insert grouped-away levels as constant values
         for level in self.levels:
             match level:
+                case "Y":
+                    df_p_agents["year"] = 1
+                    df_p_agents = df_p_agents.set_index("year", append=True)
                 case "M":
                     df_p_agents["month"] = 1
                     df_p_agents = df_p_agents.set_index("month", append=True)

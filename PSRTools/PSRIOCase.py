@@ -41,6 +41,14 @@ class PSRIOCase:
                             f"{plant_name},{plant.code},{bus.name.strip()},{bus.code},{tech}\n"
                         )
                         self.gen_bus_dict[plant.name.strip()] = bus.name.strip()
+        busbar_filepath = os.path.join(self.output_path, "busbar.csv")
+        busbars = self.study.get("Bus")
+        assert isinstance(busbars, list)
+        with open(busbar_filepath, "w", encoding="utf-8") as f:
+            f.write("busName,busCode\n")
+            for bus in busbars:
+                f.write(f"{bus.name.strip()},{bus.code}\n")
+
         sddp_filepath = os.path.join(self.output_path, "study.csv")
         with open(sddp_filepath, "w", encoding="utf-8") as f:
             f.write(f"InitialYear, {self.study.get('InitialYear')}\n")
@@ -156,7 +164,7 @@ class PSRIOCasesList:
             _ = next(f)
             while line := f.readline().strip():
                 line = [item.strip() for item in line.split(",")]
-                command, psr_study_path, levels, spawn, file, agents = line
+                command, psr_study_path, levels, spawn, file, agents, *_ = line
                 if not os.path.isabs(psr_study_path):
                     raise ValueError(
                         f"pathname must be an absolute path, got: {psr_study_path!r}"
