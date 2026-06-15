@@ -76,9 +76,15 @@ if __name__ == "__main__":
                 thread.start()
                 threads.append(thread)
             case "Download":
-                download(
-                    client, psrcloud_command  # pyright: ignore[reportArgumentType]
+                thread = threading.Thread(
+                    target=download,
+                    args=(
+                        client,
+                        psrcloud_command,
+                    ),
                 )
+                thread.start()
+                threads.append(thread)
 
     for thread in threads:
         thread.join()

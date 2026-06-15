@@ -13,7 +13,10 @@ MAX_HISTORY = 10
 def load_history():
     if os.path.exists(HISTORY_FILE):
         with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            history = json.load(f)
+        # Remove entries that no longer exist on disk
+        history = [p for p in history if os.path.isdir(p)]
+        return history
     return []
 
 

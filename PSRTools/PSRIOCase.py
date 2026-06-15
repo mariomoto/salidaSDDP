@@ -94,7 +94,7 @@ class PSRIOCase:
         )
         self.psrio_commands[psrio_object_filename].append(psrio_command)
 
-    def get_bus(self, plant) -> psr.factory.DataObject:
+    def get_bus(self, plant) -> psr.factory.DataObject | None:
         """Safely get RefBus from plant, trying generators first then direct."""
         # Try generators path
         try:
@@ -124,7 +124,11 @@ class PSRIOCase:
 
     def get_bus_agents(self, agents_string) -> str:
         agents_list = agents_string.split(";")
-        bus_agents_list = [self.gen_bus_dict[agent] for agent in agents_list]
+        bus_agents_list = [
+            self.gen_bus_dict[agent]
+            for agent in agents_list
+            if agent in self.gen_bus_dict
+        ]
         bus_agents_list = list(set(bus_agents_list))
         return ";".join(bus_agents_list)
 

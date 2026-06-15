@@ -1,9 +1,11 @@
 import pandas as pd
 import os
-import sys
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 from utils import my_print
+
+
+VALID_LEVELS = set("YMDHSX")
 
 
 class PSRIOCommand:
@@ -26,6 +28,13 @@ class PSRIOCommand:
         self.agents = agents
         self.local_agents = agents
         self.dict_psrio_objects = dict()
+
+        invalid_chars = set(self.levels) - VALID_LEVELS
+        if invalid_chars:
+            raise ValueError(
+                f"Invalid level characters {invalid_chars} in levels='{self.levels}'. "
+                f"Valid characters are: {sorted(VALID_LEVELS)}"
+            )
 
     def __repr__(self):
         return f"PSRIOCommand(command={self.command}, levels={self.levels}, spawn={self.spawn}, file={self.file}, agents={self.agents})"
@@ -62,10 +71,11 @@ class PSRIOCommand:
                 options=load_options,
             )
         except psr.factory.api.FactoryException as e:
-            my_print(f"PSRIOCommand.bin_to_parquet: {e}")
-            print(self)
-            # Add your custom error handling logic here
-            sys.exit()
+            my_print(f"PSRIOCommand.process_bin_to_dataframe: {e}")
+            my_print(f"  Command: {self}")
+            raise RuntimeError(
+                f"Failed to load dataframe from '{dataframe_pathname}': {e}"
+            ) from e
 
         df_p_agents = df_f_agents.to_pandas()
 
