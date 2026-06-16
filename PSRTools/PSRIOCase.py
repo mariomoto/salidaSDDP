@@ -45,9 +45,15 @@ class PSRIOCase:
         busbars = self.study.get("Bus")
         assert isinstance(busbars, list)
         with open(busbar_filepath, "w", encoding="utf-8") as f:
-            f.write("busName,busCode\n")
+            f.write("busName,busCode,latitude,longitude\n")
             for bus in busbars:
-                f.write(f"{bus.name.strip()},{bus.code}\n")
+                lat = bus.get('Latitude')
+                lon = bus.get('Longitude')
+                if isinstance(lat, list):
+                    lat = lat[0] if lat else ""
+                if isinstance(lon, list):
+                    lon = lon[0] if lon else ""
+                f.write(f"{bus.name.strip()},{bus.code},{lat},{lon}\n")
 
         sddp_filepath = os.path.join(self.output_path, "study.csv")
         with open(sddp_filepath, "w", encoding="utf-8") as f:
