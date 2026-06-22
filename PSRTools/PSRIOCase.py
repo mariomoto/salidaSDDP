@@ -67,10 +67,15 @@ class PSRIOCase:
                 if spawn.strip():
                     spawn_list = [spw.strip() for spw in spawn.strip().split(";")]
                     for spw in spawn_list:
-                        if spw == "D":
-                            spawn_file = "demxba"
-                        else:
-                            spawn_file = "cmgbus"
+                        match spw:
+                            case "C":
+                                spawn_file = "cmgbus"
+                            case "D":
+                                spawn_file = "demxba"
+                            case "T":
+                                spawn_file = "tarimn"
+                            case _:
+                                continue
                         spawn_agents = self.get_bus_agents(agents)
                         self.add_psrio_command(
                             psr_study_path,

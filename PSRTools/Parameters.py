@@ -19,6 +19,7 @@ DICT_PSRFILE_PSRIOOBJECT = {
     "gtcmgb": PsrioObjectInfo("ThermalPlant", "Sales", "sum", 1),
     "ingtci": PsrioObjectInfo("Circuit", "ingtci", "sum", 1),
     "demxba": PsrioObjectInfo("Bus", "demxba", "sum", 1),
+    "tarimn": PsrioObjectInfo("Bus", "tarimn", "sum", 1),
     "demand": PsrioObjectInfo("System", "demand", "sum", 1),
     "coster": PsrioObjectInfo("ThermalPlant", "coster", "sum", 1),
     "cosarr": PsrioObjectInfo("ThermalPlant", "cosarr", "sum", 1),
