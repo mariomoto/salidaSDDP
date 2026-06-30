@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-import sys
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 from utils import my_print
@@ -64,8 +63,9 @@ class PSRIOCommand:
         except psr.factory.api.FactoryException as e:
             my_print(f"PSRIOCommand.bin_to_parquet: {e}")
             print(self)
-            # Add your custom error handling logic here
-            sys.exit()
+            raise RuntimeError(
+                f"Failed to load dataframe from '{dataframe_pathname}': {e}"
+            ) from e
 
         df_p_agents = df_f_agents.to_pandas()
 
@@ -91,17 +91,34 @@ class PSRIOCommand:
 
     def group_by(self, df_p_agents: pd.DataFrame) -> pd.DataFrame:
 
-        days = (df_p_agents.index.get_level_values("hour") - 1) // 24 + 1
-        hours = (df_p_agents.index.get_level_values("hour") - 1) % 24
+        has_hour = "hour" in df_p_agents.index.names
+        has_block = "block" in df_p_agents.index.names
 
-        level_arrays = [
-            df_p_agents.index.get_level_values("year"),
-            df_p_agents.index.get_level_values("month"),
-            days,
-            hours,
-        ]
+        if has_hour:
+            days = (df_p_agents.index.get_level_values("hour") - 1) // 24 + 1
+            hours = (df_p_agents.index.get_level_values("hour") - 1) % 24
 
-        level_names = ["year", "month", "day", "hour"]
+            level_arrays = [
+                df_p_agents.index.get_level_values("year"),
+                df_p_agents.index.get_level_values("month"),
+                days,
+                hours,
+            ]
+            level_names = ["year", "month", "day", "hour"]
+        else:
+            level_arrays = [
+                df_p_agents.index.get_level_values(str(name))
+                for name in df_p_agents.index.names
+                if name not in ("scenario", "block")
+            ]
+            level_names = [
+                str(name) for name in df_p_agents.index.names
+                if name not in ("scenario", "block")
+            ]
+
+        if has_block:
+            level_arrays.append(df_p_agents.index.get_level_values("block"))
+            level_names.append("block")
 
         if "scenario" in df_p_agents.index.names:
             level_arrays.append(df_p_agents.index.get_level_values("scenario"))
@@ -113,13 +130,20 @@ class PSRIOCommand:
         for level in self.levels:
             match level:
                 case "Y":
-                    groupby_levels.remove("year")
+                    if "year" in groupby_levels:
+                        groupby_levels.remove("year")
                 case "M":
-                    groupby_levels.remove("month")
+                    if "month" in groupby_levels:
+                        groupby_levels.remove("month")
                 case "D":
-                    groupby_levels.remove("day")
+                    if "day" in groupby_levels:
+                        groupby_levels.remove("day")
                 case "H":
-                    groupby_levels.remove("hour")
+                    if "hour" in groupby_levels:
+                        groupby_levels.remove("hour")
+                case "B":
+                    if "block" in groupby_levels:
+                        groupby_levels.remove("block")
 
         operation = DICT_PSRFILE_PSRIOOBJECT[self.file].operation
         match operation:
@@ -139,20 +163,28 @@ class PSRIOCommand:
         for level in self.levels:
             match level:
                 case "Y":
-                    df_p_agents["year"] = 1
-                    df_p_agents = df_p_agents.set_index("year", append=True)
+                    if "year" in level_names:
+                        df_p_agents["year"] = 1
+                        df_p_agents = df_p_agents.set_index("year", append=True)
                 case "M":
-                    df_p_agents["month"] = 1
-                    df_p_agents = df_p_agents.set_index("month", append=True)
+                    if "month" in level_names:
+                        df_p_agents["month"] = 1
+                        df_p_agents = df_p_agents.set_index("month", append=True)
                 case "D":
-                    df_p_agents["day"] = 1
-                    df_p_agents = df_p_agents.set_index("day", append=True)
+                    if "day" in level_names:
+                        df_p_agents["day"] = 1
+                        df_p_agents = df_p_agents.set_index("day", append=True)
                 case "H":
-                    df_p_agents["hour"] = 1
-                    df_p_agents = df_p_agents.set_index("hour", append=True)
+                    if "hour" in level_names:
+                        df_p_agents["hour"] = 1
+                        df_p_agents = df_p_agents.set_index("hour", append=True)
+                case "B":
+                    if "block" in level_names:
+                        df_p_agents["block"] = 1
+                        df_p_agents = df_p_agents.set_index("block", append=True)
 
         # Reorder index levels to match original level_names order
-        final_levels = [l for l in level_names if l in df_p_agents.index.names]
+        final_levels: list[str] = [l for l in level_names if l in df_p_agents.index.names]
         df_p_agents = df_p_agents.reorder_levels(final_levels)
 
         return df_p_agents
