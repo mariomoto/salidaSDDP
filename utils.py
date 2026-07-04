@@ -110,7 +110,7 @@ def my_print(msg: str):
     print(f"{nowstr} - {msg}")
 
 def convert_to_short_path(directory: str) -> str:
+    parent, last = os.path.split(directory)
     buf = ctypes.create_unicode_buffer(512)
-    ctypes.windll.kernel32.GetShortPathNameW(directory, buf, 512)
-    directory = buf.value
-    return directory
+    ctypes.windll.kernel32.GetShortPathNameW(parent, buf, 512)
+    return os.path.join(buf.value, last)

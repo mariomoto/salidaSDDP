@@ -84,7 +84,13 @@ class PSRCloudCase:
             my_print(
                 f"{self.psrcloud_command.casename}: Se ejecuta sin optimización de precio."
             )
-            status = self.try_run_study()
+            try:
+                status = self.try_run_study()
+            except psr.cloud.CloudError as e2:
+                my_print(
+                    f"{self.psrcloud_command.casename}: {e2}"
+                )
+                return None
 
         return status
 

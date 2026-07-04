@@ -143,13 +143,19 @@ class PSRIOCase:
         df_dict = defaultdict(pd.DataFrame)
         for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
             for psrio_command in psrio_command_list:
-                df_dict[psrio_object_filename] = pd.concat(
-                    [
-                        df_dict[psrio_object_filename],
-                        psrio_command.process_bin_to_dataframe(),
-                    ],
-                    axis=1,
-                )
+                try:
+                    df_dict[psrio_object_filename] = pd.concat(
+                        [
+                            df_dict[psrio_object_filename],
+                            psrio_command.process_bin_to_dataframe(),
+                        ],
+                        axis=1,
+                    )
+                except (RuntimeError, FileNotFoundError, OSError) as e:
+                    my_print(
+                        f"PSRIOCase.run_psrio_commands: Error processing '{psrio_command.file}': {e}"
+                    )
+                    continue
         for key, df in df_dict.items():
             filepath = os.path.join(self.output_path, key)
             if os.path.exists(filepath):
@@ -189,9 +195,13 @@ class PSRIOCasesList:
         self.psrio_cases_list: List[PSRIOCase] = []
         for psr_study_path, psrio_commands_strings in psrio_commands.items():
             my_print(f"PSRIOCasesList: {psr_study_path}.")
-            self.psrio_cases_list.append(
-                PSRIOCase(output_path, psr_study_path, psrio_commands_strings)
-            )
+            try:
+                self.psrio_cases_list.append(
+                    PSRIOCase(output_path, psr_study_path, psrio_commands_strings)
+                )
+            except psr.factory.api.FactoryException as e:
+                my_print(f"PSRIOCasesList: Skipping '{psr_study_path}': {e}")
+                continue
 
     def get_cases(self) -> List[PSRIOCase]:
         return self.psrio_cases_list
