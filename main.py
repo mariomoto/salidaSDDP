@@ -1,4 +1,5 @@
 import os
+import logging
 import threading
 import PSRTools.PSRCloudCase as sc
 import PSRTools.PSRIOCase as sio
@@ -7,6 +8,17 @@ import psr.factory
 import sys
 from utils import choose_directory_with_history, convert_to_short_path
 import ctypes
+
+# Suppress the massive '--- Logging error ---' tracebacks from psr.cloud's
+# console output containing Latin-1 characters that cp1252 can't encode.
+_original_handle_error = logging.Handler.handleError
+
+def _quiet_handle_error(self, record):  # type: ignore[no-untyped-def]
+    _, exc, _ = sys.exc_info()
+    if not isinstance(exc, UnicodeEncodeError):
+        _original_handle_error(self, record)
+
+logging.Handler.handleError = _quiet_handle_error  # type: ignore[assignment]
 
 
 def run(client: psr.cloud.Client, psrcloud_command: sc.PSRCloudCommand):

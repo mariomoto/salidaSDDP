@@ -14,10 +14,11 @@ from utils import my_print, convert_to_short_path
 class PSRIOCase:
 
     def __init__(
-        self, output_path: str, psr_study_path: str, psrio_commands_strings: List[str]
+        self, output_path: str, psr_study_path: str, original_path: str, psrio_commands_strings: List[str]
     ):
         self.output_path = output_path
         self.pathname = psr_study_path
+        self.original_path = original_path
         self.study: psr.factory.Study = psr.factory.load_study(psr_study_path)
         self.psrio_commands: defaultdict[str, List[PSRIOCommand]] = defaultdict(list)
 
@@ -94,7 +95,7 @@ class PSRIOCase:
         self, psr_study_path, command, levels, spawn, file, agents
     ) -> None:
         psrio_command = PSRIOCommand(
-            self.study, psr_study_path, command, levels, spawn, file, agents
+            self.study, psr_study_path, self.original_path, command, levels, spawn, file, agents
         )
         psrio_object_filename = (
             DICT_PSRFILE_PSRIOOBJECT[psrio_command.file].object_filename
@@ -127,7 +128,7 @@ class PSRIOCase:
             prefix = f"{current_class}.{current_method}"
             my_print(f"""
 {prefix}: Factory Exception caught: {e}
-{prefix}: Pathname: {self.pathname}.
+{prefix}: Pathname: {self.original_path}.
 {prefix}: Plant: {plant.name.strip()}.
 {prefix}: Continuing without this plant...
             """)
@@ -175,6 +176,7 @@ class PSRIOCasesList:
     def __init__(self, output_path: str):
 
         psrio_commands: defaultdict[str, list[str]] = defaultdict(list)
+        original_paths: dict[str, str] = {}
         with open(
             os.path.join(output_path, "psrio_commands.csv"), "r", encoding="latin-1"
         ) as f:
@@ -186,21 +188,25 @@ class PSRIOCasesList:
                     raise ValueError(
                         f"pathname must be an absolute path, got: {psr_study_path!r}"
                     )
+                original_path = psr_study_path
                 psr_study_path = convert_to_short_path(psr_study_path)
                 psrio_commands_strings = ",".join(
                     [command, levels, spawn, file, agents]
                 )
                 psrio_commands[psr_study_path].append(psrio_commands_strings)
+                original_paths[psr_study_path] = original_path
 
         self.psrio_cases_list: List[PSRIOCase] = []
         for psr_study_path, psrio_commands_strings in psrio_commands.items():
-            my_print(f"PSRIOCasesList: {psr_study_path}.")
+            original_path = original_paths[psr_study_path]
+            my_print(f"PSRIOCasesList: {original_path}.")
             try:
                 self.psrio_cases_list.append(
-                    PSRIOCase(output_path, psr_study_path, psrio_commands_strings)
+                    PSRIOCase(output_path, psr_study_path, original_path, psrio_commands_strings)
                 )
             except psr.factory.api.FactoryException as e:
-                my_print(f"PSRIOCasesList: Skipping '{psr_study_path}': {e}")
+                error_msg = str(e).replace(psr_study_path, original_path)
+                my_print(f"PSRIOCasesList: Skipping '{original_path}': {error_msg}")
                 continue
 
     def get_cases(self) -> List[PSRIOCase]:

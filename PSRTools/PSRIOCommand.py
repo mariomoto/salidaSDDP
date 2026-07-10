@@ -10,6 +10,7 @@ class PSRIOCommand:
         self,
         study: psr.factory.Study,
         pathname: str,
+        original_path: str,
         command: str,
         levels: str,
         spawn: str,
@@ -18,6 +19,7 @@ class PSRIOCommand:
     ):
         self.study = study
         self.pathname = pathname
+        self.original_path = original_path
         self.command = command
         self.levels = levels if levels else "X"
         self.spawn = spawn
@@ -61,10 +63,12 @@ class PSRIOCommand:
                 options=load_options,
             )
         except psr.factory.api.FactoryException as e:
-            my_print(f"PSRIOCommand.bin_to_parquet: {e}")
+            original_dataframe_pathname = os.path.join(self.original_path, self.file + ".hdr")
+            error_msg = str(e).replace(dataframe_pathname, original_dataframe_pathname)
+            my_print(f"PSRIOCommand.bin_to_parquet: {error_msg}")
             print(self)
             raise RuntimeError(
-                f"Failed to load dataframe from '{dataframe_pathname}': {e}"
+                f"Failed to load dataframe from '{original_dataframe_pathname}': {error_msg}"
             ) from e
 
         df_p_agents = df_f_agents.to_pandas()

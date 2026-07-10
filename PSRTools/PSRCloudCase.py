@@ -15,13 +15,15 @@ class PSRCloudCommand:
         version: str,
         optimized: str,
         psr_study_path: str,
+        original_path: str,
         parent_id: str | None,
         id: int,
         output_files: str,
     ):
         self.command = command
-        self.casename = Path(psr_study_path).name
+        self.casename = Path(original_path).name
         self.pathname = psr_study_path
+        self.original_path = original_path
         self.parent_id = parent_id
         self.id = id
         self.optimized = True if optimized.upper() == "TRUE" else False
@@ -55,6 +57,7 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                     raise ValueError(
                         f"pathname must be an absolute path, got: {psr_study_path!r}"
                     )
+                original_path = psr_study_path
                 psr_study_path = convert_to_short_path(psr_study_path)
                 self.append(
                     PSRCloudCommand(
@@ -62,6 +65,7 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                         version,
                         optimized,
                         psr_study_path,
+                        original_path,
                         parent_id,
                         id,
                         output_files,
@@ -78,6 +82,9 @@ class PSRCloudCase:
     def run_study(self):
         try:
             status = self.try_run_study()
+        except psr.cloud.CloudInputError as e:
+            my_print(f"{self.psrcloud_command.casename}: {e}")
+            return None
         except psr.cloud.CloudError as e:
             my_print(f"{self.psrcloud_command.casename}: {e}")
             self.psrcloud_command.optimized = False
@@ -86,7 +93,7 @@ class PSRCloudCase:
             )
             try:
                 status = self.try_run_study()
-            except psr.cloud.CloudError as e2:
+            except (psr.cloud.CloudError, psr.cloud.CloudInputError) as e2:
                 my_print(
                     f"{self.psrcloud_command.casename}: {e2}"
                 )
