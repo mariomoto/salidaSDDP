@@ -159,13 +159,16 @@ class PSRIOCase:
                     continue
         for key, df in df_dict.items():
             filepath = os.path.join(self.output_path, key)
+            df = df.loc[:, ~df.columns.duplicated()]
             if os.path.exists(filepath):
-                os.remove(filepath)
+                if filepath.endswith(".parquet"):
+                    existing = pd.read_parquet(filepath)
+                else:
+                    existing = pd.read_csv(filepath, index_col=list(range(df.index.nlevels)))
+                df = pd.concat([existing, df], axis=0)
             try:
                 psrio_command = self.psrio_commands[key][0]
-                psrio_command.save_dataframe(
-                    df.loc[:, ~df.columns.duplicated()], filepath
-                )
+                psrio_command.save_dataframe(df, filepath)
             except ValueError as e:
                 my_print(
                     f"PSRIOCase.run_psrio_commands: Exception caught while saving {filepath}: {e}"
