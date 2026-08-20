@@ -56,11 +56,9 @@ class PSRIOCase:
                     lon = lon[0] if lon else ""
                 f.write(f"{bus.name.strip()},{bus.code},{lat},{lon}\n")
 
-        sddp_filepath = os.path.join(self.output_path, "study.csv")
-        with open(sddp_filepath, "w", encoding="utf-8") as f:
-            f.write(f"InitialYear, {self.study.get('InitialYear')}\n")
-            f.write(f"NumberStages, {self.study.get('NumberStages')}\n")
-            f.write(f"NumberSimulations, {self.study.get('NumberSimulations')}\n")
+        self.initial_year = self.study.get('InitialYear')
+        self.number_stages = self.study.get('NumberStages')
+        self.number_simulations = self.study.get('NumberSimulations')
 
         for string in psrio_commands_strings:
             command, levels, spawn, file, agents = string.split(",")
@@ -211,6 +209,13 @@ class PSRIOCasesList:
                 error_msg = str(e).replace(psr_study_path, original_path)
                 my_print(f"PSRIOCasesList: Skipping '{original_path}': {error_msg}")
                 continue
+
+        if self.psrio_cases_list:
+            sddp_filepath = os.path.join(output_path, "study.csv")
+            with open(sddp_filepath, "w", encoding="utf-8") as f:
+                f.write(f"InitialYear, {min(c.initial_year for c in self.psrio_cases_list)}\n")
+                f.write(f"NumberStages, {sum(c.number_stages for c in self.psrio_cases_list)}\n")
+                f.write(f"NumberSimulations, {self.psrio_cases_list[0].number_simulations}\n")
 
     def get_cases(self) -> List[PSRIOCase]:
         return self.psrio_cases_list
