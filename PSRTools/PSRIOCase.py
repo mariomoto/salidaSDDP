@@ -141,15 +141,19 @@ class PSRIOCase:
         return ";".join(bus_agents_list)
 
     def run_psrio_commands(self):
-        df_dict = defaultdict(pd.DataFrame)
         for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
+            filepath = os.path.join(self.output_path, psrio_object_filename)
+            if self.is_output_up_to_date(filepath, psrio_command_list):
+                my_print(
+                    f"PSRIOCase.run_psrio_commands: Skipping '{psrio_object_filename}': output is up to date."
+                )
+                continue
+
+            df = pd.DataFrame()
             for psrio_command in psrio_command_list:
                 try:
-                    df_dict[psrio_object_filename] = pd.concat(
-                        [
-                            df_dict[psrio_object_filename],
-                            psrio_command.process_bin_to_dataframe(),
-                        ],
+                    df = pd.concat(
+                        [df, psrio_command.process_bin_to_dataframe()],
                         axis=1,
                     )
                 except (RuntimeError, FileNotFoundError, OSError) as e:
@@ -157,19 +161,34 @@ class PSRIOCase:
                         f"PSRIOCase.run_psrio_commands: Error processing '{psrio_command.file}': {e}"
                     )
                     continue
-        for key, df in df_dict.items():
-            filepath = os.path.join(self.output_path, key)
+
             if os.path.exists(filepath):
                 os.remove(filepath)
             try:
-                psrio_command = self.psrio_commands[key][0]
-                psrio_command.save_dataframe(
+                psrio_command_list[0].save_dataframe(
                     df.loc[:, ~df.columns.duplicated()], filepath
                 )
             except ValueError as e:
                 my_print(
                     f"PSRIOCase.run_psrio_commands: Exception caught while saving {filepath}: {e}"
                 )
+
+    def is_output_up_to_date(
+        self, filepath: str, psrio_command_list: List[PSRIOCommand]
+    ) -> bool:
+        """True if filepath exists and is newer than every source .hdr/.bin it depends on."""
+        if not os.path.exists(filepath):
+            return False
+        output_mtime = os.path.getmtime(filepath)
+        for psrio_command in psrio_command_list:
+            for ext in ("hdr", "bin"):
+                source_path = os.path.join(
+                    psrio_command.pathname, psrio_command.file + "." + ext
+                )
+                if os.path.exists(source_path) and os.path.getmtime(source_path) > output_mtime:
+                    return False
+        return True
+
 
 
 class PSRIOCasesList:
@@ -199,6 +218,14 @@ class PSRIOCasesList:
         self.psrio_cases_list: List[PSRIOCase] = []
         for psr_study_path, psrio_commands_strings in psrio_commands.items():
             original_path = original_paths[psr_study_path]
+            if not any(
+                string.split(",")[0].lower() in PSRIO_COMMANDS
+                for string in psrio_commands_strings
+            ):
+                my_print(
+                    f"PSRIOCasesList: Skipping '{os.path.basename(original_path)}': no row has a valid command ({PSRIO_COMMANDS})."
+                )
+                continue
             my_print(f"PSRIOCasesList: {original_path}.")
             try:
                 self.psrio_cases_list.append(
