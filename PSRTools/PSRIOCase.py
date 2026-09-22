@@ -141,11 +141,11 @@ class PSRIOCase:
     def run_psrio_commands(self):
         for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
             filepath = os.path.join(self.output_path, psrio_object_filename)
-            if self.is_output_up_to_date(filepath, psrio_command_list):
-                my_print(
-                    f"PSRIOCase.run_psrio_commands: Skipping '{psrio_object_filename}': output is up to date."
-                )
-                continue
+            # if self.is_output_up_to_date(filepath, psrio_command_list):
+            #     my_print(
+            #         f"PSRIOCase.run_psrio_commands: Skipping '{psrio_object_filename}': output is up to date."
+            #     )
+            #     continue
 
             df = pd.DataFrame()
             for psrio_command in psrio_command_list:

@@ -111,11 +111,12 @@ class PSRCloudCase:
                     for name in output_files.split(";")
                     for ext in ["hdr", "bin"]
                 ]
+                extensions = ["dat"]
                 self.client.download_results(
                     self.psrcloud_command.id,
                     self.psrcloud_command.pathname,
                     output_files,
-                    [],
+                    extensions
                 )
 
     def try_run_study(self):
