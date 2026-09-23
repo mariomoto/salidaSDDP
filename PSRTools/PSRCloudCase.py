@@ -106,11 +106,14 @@ class PSRCloudCase:
             status, status_msg = self.client.get_status(self.psrcloud_command.id)
             if str(status) == "ExecutionStatus.SUCCESS":
                 output_files = self.psrcloud_command.output_files
-                output_files = [
-                    f"{name}.{ext}"
-                    for name in output_files.split(";")
-                    for ext in ["hdr", "bin"]
-                ]
+                if output_files:
+                    output_files = [
+                        f"{name}.{ext}"
+                        for name in output_files.split(";")
+                        for ext in ["hdr", "bin"]
+                    ]
+                else:
+                    output_files = []
                 extensions = ["dat"]
                 self.client.download_results(
                     self.psrcloud_command.id,
