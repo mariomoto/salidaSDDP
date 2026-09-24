@@ -38,3 +38,5 @@ LIST_PSRIOOBJECT = [
 ]
 
 PSRIO_COMMANDS = ["parquet", "csv"]
+
+ALLOWED_EXTENSIONS = {"dat", "hdr", "bin"}

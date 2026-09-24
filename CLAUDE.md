@@ -31,7 +31,7 @@ UML/
 
 | File | Format |
 |------|--------|
-| `psrcloud_commands.csv` | `command, version, optimized, psr_study_path, parent_id, id, output_files` |
+| `psrcloud_commands.csv` | `command, version, optimized, psr_study_path, parent_id, id, output_files, extensions` (`extensions`: `;`-separated subset of `dat`, `hdr`, `bin`, or empty) |
 | `psrio_commands.csv` | `command, psr_study_path, levels, spawn, file, agents` |
 
 ### Levels Grammar (temporal aggregation tokens)

@@ -5,6 +5,7 @@ import os
 import psr.cloud
 import psr.cloud.status
 from utils import my_print, convert_to_short_path
+from PSRTools.Parameters import ALLOWED_EXTENSIONS
 
 
 class PSRCloudCommand:
@@ -19,6 +20,7 @@ class PSRCloudCommand:
         parent_id: str | None,
         id: int,
         output_files: str,
+        extensions: str,
     ):
         self.command = command
         self.casename = Path(original_path).name
@@ -28,6 +30,7 @@ class PSRCloudCommand:
         self.id = id
         self.optimized = True if optimized.upper() == "TRUE" else False
         self.output_files = output_files
+        self.extensions = extensions
         self.version = version
 
 
@@ -50,6 +53,7 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                     parent_id,
                     id,
                     output_files,
+                    extensions,
                 ) = line
                 parent_id = parent_id or None
                 id = int(id or "0")
@@ -69,6 +73,7 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                         parent_id,
                         id,
                         output_files,
+                        extensions,
                     )
                 )
 
@@ -114,12 +119,17 @@ class PSRCloudCase:
                     ]
                 else:
                     output_files = []
-                extensions = ["dat"]
+                extensions = []
+                for ext in filter(None, (e.strip().lower() for e in self.psrcloud_command.extensions.split(";"))):
+                    if ext in ALLOWED_EXTENSIONS:
+                        extensions.append(ext)
+                    else:
+                        my_print(f"Extensión no válida: {ext!r}")
                 self.client.download_results(
                     self.psrcloud_command.id,
                     self.psrcloud_command.pathname,
                     output_files,
-                    extensions
+                    extensions,
                 )
 
     def try_run_study(self):
