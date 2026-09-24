@@ -40,3 +40,6 @@ LIST_PSRIOOBJECT = [
 PSRIO_COMMANDS = ["parquet", "csv"]
 
 ALLOWED_EXTENSIONS = {"dat", "hdr", "bin"}
+
+ALLOWED_MEMORY_PER_PROCESS_RATIOS = {"2:1", "4:1", "8:1"}
+ALLOWED_NUMBER_OF_PROCESSES = {"64", "128", "192", "256"}
