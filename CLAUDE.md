@@ -31,7 +31,7 @@ UML/
 
 | File | Format |
 |------|--------|
-| `psrcloud_commands.csv` | `command, version, optimized, psr_study_path, parent_id, id, output_files, extensions` (`extensions`: `;`-separated subset of `dat`, `hdr`, `bin`, or empty) |
+| `psrcloud_commands.csv` | `command, version, optimized, memory_per_process_ratio, number_of_processes, psr_study_path, parent_id, id, output_files, extensions` (`memory_per_process_ratio`: `2:1` or `4:1`; `number_of_processes`: `64`, `128`, `192`, or `256`; `extensions`: `;`-separated subset of `dat`, `hdr`, `bin`, or empty) |
 | `psrio_commands.csv` | `command, psr_study_path, levels, spawn, file, agents` |
 
 ### Levels Grammar (temporal aggregation tokens)

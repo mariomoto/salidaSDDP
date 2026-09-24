@@ -5,7 +5,11 @@ import os
 import psr.cloud
 import psr.cloud.status
 from utils import my_print, convert_to_short_path
-from PSRTools.Parameters import ALLOWED_EXTENSIONS
+from PSRTools.Parameters import (
+    ALLOWED_EXTENSIONS,
+    ALLOWED_MEMORY_PER_PROCESS_RATIOS,
+    ALLOWED_NUMBER_OF_PROCESSES,
+)
 
 
 class PSRCloudCommand:
@@ -15,6 +19,8 @@ class PSRCloudCommand:
         command: str,
         version: str,
         optimized: str,
+        memory_per_process_ratio: str,
+        number_of_processes: str,
         psr_study_path: str,
         original_path: str,
         parent_id: str | None,
@@ -29,6 +35,8 @@ class PSRCloudCommand:
         self.parent_id = parent_id
         self.id = id
         self.optimized = True if optimized.upper() == "TRUE" else False
+        self.memory_per_process_ratio = memory_per_process_ratio
+        self.number_of_processes = int(number_of_processes)
         self.output_files = output_files
         self.extensions = extensions
         self.version = version
@@ -49,6 +57,8 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                     command,
                     version,
                     optimized,
+                    memory_per_process_ratio,
+                    number_of_processes,
                     psr_study_path,
                     parent_id,
                     id,
@@ -57,6 +67,14 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                 ) = line
                 parent_id = parent_id or None
                 id = int(id or "0")
+                if memory_per_process_ratio not in ALLOWED_MEMORY_PER_PROCESS_RATIOS:
+                    if memory_per_process_ratio:
+                        my_print("Invalid memory ratio; using 2:1")
+                    memory_per_process_ratio = "2:1"
+                if number_of_processes not in ALLOWED_NUMBER_OF_PROCESSES:
+                    if number_of_processes:
+                        my_print("Invalid process count; using 64")
+                    number_of_processes = "64"
                 if not os.path.isabs(psr_study_path):
                     raise ValueError(
                         f"pathname must be an absolute path, got: {psr_study_path!r}"
@@ -68,6 +86,8 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                         command,
                         version,
                         optimized,
+                        memory_per_process_ratio,
+                        number_of_processes,
                         psr_study_path,
                         original_path,
                         parent_id,
@@ -139,9 +159,9 @@ class PSRCloudCase:
             program="SDDP",
             program_version=self.psrcloud_command.version,
             execution_type="Operation Planning (Default)",
-            memory_per_process_ratio="2:1",
+            memory_per_process_ratio=self.psrcloud_command.memory_per_process_ratio,
             price_optimized=self.psrcloud_command.optimized,
-            number_of_processes=64,
+            number_of_processes=self.psrcloud_command.number_of_processes,
             repository_duration=2,
             budget="",
             parent_case_id=self.psrcloud_command.parent_id,
