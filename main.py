@@ -6,7 +6,7 @@ import PSRTools.PSRIOCase as sio
 import psr.cloud
 import psr.factory
 import sys
-from utils import choose_directory_with_history, convert_to_short_path
+from utils import choose_directory_with_history, convert_to_short_path, start_log_file
 import ctypes
 
 # Suppress the massive '--- Logging error ---' tracebacks from psr.cloud's
@@ -44,6 +44,8 @@ if __name__ == "__main__":
         sys.exit()
 
     output_folder = convert_to_short_path(output_folder)
+    # Must run before psr.cloud.Client() so its StreamHandler binds to the tee'd stderr.
+    start_log_file(output_folder)
 
     with open(os.path.join("c:\\", "PSR", "passkey.txt"), "r") as f:
         passkey = f.read().strip()

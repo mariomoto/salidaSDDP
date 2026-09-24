@@ -2,6 +2,7 @@ import ctypes
 import datetime
 import json
 import os
+import sys
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 from tkinter import ttk
@@ -108,6 +109,32 @@ def my_print(msg: str):
     now = datetime.datetime.now()
     nowstr = now.strftime("%Y-%m-%d %H:%M:%S,") + f"{now.microsecond // 1000:03d}"
     print(f"{nowstr} - {msg}")
+
+
+class _Tee:
+    def __init__(self, stream, log_file):
+        self.stream = stream
+        self.log_file = log_file
+
+    def write(self, data):
+        self.log_file.write(data)
+        return self.stream.write(data)
+
+    def flush(self):
+        self.log_file.flush()
+        self.stream.flush()
+
+    def __getattr__(self, name):
+        return getattr(self.stream, name)
+
+
+def start_log_file(folder: str) -> str:
+    now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_path = os.path.join(folder, f"salidasSDDP{now}.log")
+    log_file = open(log_path, "a", encoding="utf-8", buffering=1)
+    sys.stdout = _Tee(sys.stdout, log_file)
+    sys.stderr = _Tee(sys.stderr, log_file)
+    return log_path
 
 def convert_to_short_path(directory: str) -> str:
     parent, last = os.path.split(directory)
