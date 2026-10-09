@@ -69,8 +69,12 @@ class PSRCloudCommandsList(List[PSRCloudCommand]):
                 id = int(id or "0")
                 if memory_per_process_ratio not in ALLOWED_MEMORY_PER_PROCESS_RATIOS:
                     if memory_per_process_ratio:
-                        my_print("Invalid memory ratio; using 2:1")
-                    memory_per_process_ratio = "2:1"
+                        my_print("Invalid memory ratio; using 2")
+                    memory_per_process_ratio = "2"
+                if memory_per_process_ratio == "8" and optimized.upper() == "TRUE":
+                    my_print("Invalid memory ratio = 8 cannot be price optimized; price optimization disabled")
+                    optimized = "FALSE"
+                memory_per_process_ratio = str(memory_per_process_ratio) + ":1"
                 if number_of_processes not in ALLOWED_NUMBER_OF_PROCESSES:
                     if number_of_processes:
                         my_print("Invalid process count; using 64")
