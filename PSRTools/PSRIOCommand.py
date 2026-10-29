@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import psr.factory
-from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
+from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT, parse_formats
 from utils import my_print
 
 
@@ -21,6 +21,7 @@ class PSRIOCommand:
         self.pathname = pathname
         self.original_path = original_path
         self.command = command
+        self.formats = parse_formats(command)
         self.levels = levels if levels else "X"
         self.spawn = spawn
         self.file = file
@@ -84,14 +85,15 @@ class PSRIOCommand:
 
         return df_p_agents
 
-    def save_dataframe(self, df: pd.DataFrame, filepath: str) -> None:
-        match self.command.lower():
+    @staticmethod
+    def save_dataframe(df: pd.DataFrame, filepath: str, fmt: str) -> None:
+        match fmt:
             case "parquet":
                 df.to_parquet(filepath)
             case "csv":
                 df.to_csv(filepath)
             case _:
-                raise ValueError(f"Unsupported format: {self.command!r}")
+                raise ValueError(f"Unsupported format: {fmt!r}")
 
     def group_by(self, df_p_agents: pd.DataFrame) -> pd.DataFrame:
 

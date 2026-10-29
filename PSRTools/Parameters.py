@@ -39,6 +39,13 @@ LIST_PSRIOOBJECT = [
 
 PSRIO_COMMANDS = ["parquet", "csv"]
 
+
+def parse_formats(command: str) -> list[str]:
+    """Valid, de-duplicated output formats from a ';'-separated command (e.g. 'csv;parquet')."""
+    return list(dict.fromkeys(
+        fmt for fmt in (c.strip().lower() for c in command.split(";")) if fmt in PSRIO_COMMANDS
+    ))
+
 ALLOWED_EXTENSIONS = {"dat", "hdr", "bin"}
 
 ALLOWED_MEMORY_PER_PROCESS_RATIOS = {"2", "4", "8"}

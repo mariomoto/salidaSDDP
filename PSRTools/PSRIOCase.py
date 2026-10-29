@@ -6,7 +6,7 @@ import os
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT
 from PSRTools.Parameters import LIST_PSRIOOBJECT
-from PSRTools.Parameters import PSRIO_COMMANDS
+from PSRTools.Parameters import PSRIO_COMMANDS, parse_formats
 from PSRTools.PSRIOCommand import PSRIOCommand
 from utils import my_print, convert_to_short_path
 
@@ -62,7 +62,7 @@ class PSRIOCase:
 
         for string in psrio_commands_strings:
             command, levels, spawn, file, agents = string.split(",")
-            if command.lower() in PSRIO_COMMANDS:
+            if parse_formats(command):
                 if spawn.strip():
                     spawn_list = [spw.strip() for spw in spawn.strip().split(";")]
                     for spw in spawn_list:
@@ -95,14 +95,12 @@ class PSRIOCase:
         psrio_command = PSRIOCommand(
             self.study, psr_study_path, self.original_path, command, levels, spawn, file, agents
         )
-        psrio_object_filename = (
+        base_filename = (
             DICT_PSRFILE_PSRIOOBJECT[psrio_command.file].object_filename
             + psrio_command.levels
             + psrio_command.spawn
-            + "."
-            + psrio_command.command.lower()
         )
-        self.psrio_commands[psrio_object_filename].append(psrio_command)
+        self.psrio_commands[base_filename].append(psrio_command)
 
     def get_bus(self, plant) -> psr.factory.DataObject:
         """Safely get RefBus from plant, trying generators first then direct."""
@@ -139,42 +137,44 @@ class PSRIOCase:
         return ";".join(bus_agents_list)
 
     def run_psrio_commands(self):
-        for psrio_object_filename, psrio_command_list in self.psrio_commands.items():
-            filepath = os.path.join(self.output_path, psrio_object_filename)
-            # if self.is_output_up_to_date(filepath, psrio_command_list):
-            #     my_print(
-            #         f"PSRIOCase.run_psrio_commands: Skipping '{psrio_object_filename}': output is up to date."
-            #     )
-            #     continue
-
-            df = pd.DataFrame()
+        for base_filename, psrio_command_list in self.psrio_commands.items():
+            # Each .bin is read and aggregated once, regardless of how many formats request it.
+            frames: List[tuple[PSRIOCommand, pd.DataFrame]] = []
             for psrio_command in psrio_command_list:
                 try:
-                    df = pd.concat(
-                        [df, psrio_command.process_bin_to_dataframe()],
-                        axis=1,
-                    )
+                    frames.append((psrio_command, psrio_command.process_bin_to_dataframe()))
                 except (RuntimeError, FileNotFoundError, OSError) as e:
                     my_print(
                         f"PSRIOCase.run_psrio_commands: Error processing '{psrio_command.file}': {e}"
                     )
                     continue
 
-            if os.path.exists(filepath):
-                if filepath.endswith(".parquet"):
-                    existing = pd.read_parquet(filepath)
-                else:
-                    existing = pd.read_csv(filepath, index_col=list(range(df.index.nlevels)))
-                df = pd.concat([existing, df], axis=0)
+            formats = dict.fromkeys(
+                fmt for psrio_command in psrio_command_list for fmt in psrio_command.formats
+            )
+            combined: dict[tuple[int, ...], pd.DataFrame] = {}
+            for fmt in formats:
+                filepath = os.path.join(self.output_path, f"{base_filename}.{fmt}")
+                selected = tuple(i for i, (cmd, _) in enumerate(frames) if fmt in cmd.formats)
+                if selected not in combined:
+                    parts = [frames[i][1] for i in selected]
+                    df = pd.concat(parts, axis=1) if parts else pd.DataFrame()
+                    combined[selected] = df.loc[:, ~df.columns.duplicated()]
+                df = combined[selected]
 
-            try:
-                psrio_command_list[0].save_dataframe(
-                    df.loc[:, ~df.columns.duplicated()], filepath
-                )
-            except ValueError as e:
-                my_print(
-                    f"PSRIOCase.run_psrio_commands: Exception caught while saving {filepath}: {e}"
-                )
+                if os.path.exists(filepath):
+                    if fmt == "parquet":
+                        existing = pd.read_parquet(filepath)
+                    else:
+                        existing = pd.read_csv(filepath, index_col=list(range(df.index.nlevels)))
+                    df = pd.concat([existing, df], axis=0)
+
+                try:
+                    PSRIOCommand.save_dataframe(df, filepath, fmt)
+                except ValueError as e:
+                    my_print(
+                        f"PSRIOCase.run_psrio_commands: Exception caught while saving {filepath}: {e}"
+                    )
 
     def is_output_up_to_date(
         self, filepath: str, psrio_command_list: List[PSRIOCommand]
@@ -222,7 +222,7 @@ class PSRIOCasesList:
         for psr_study_path, psrio_commands_strings in psrio_commands.items():
             original_path = original_paths[psr_study_path]
             if not any(
-                string.split(",")[0].lower() in PSRIO_COMMANDS
+                parse_formats(string.split(",")[0])
                 for string in psrio_commands_strings
             ):
                 my_print(

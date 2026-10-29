@@ -103,10 +103,12 @@ if __name__ == "__main__":
         sys.exit(1)
 
     for psrio_case in psrio_cases_list.get_cases():
-        for filename in psrio_case.psrio_commands:
-            filepath = os.path.join(output_folder, filename)
-            if os.path.exists(filepath):
-                os.remove(filepath)
+        for base_filename, psrio_command_list in psrio_case.psrio_commands.items():
+            formats = {fmt for cmd in psrio_command_list for fmt in cmd.formats}
+            for fmt in formats:
+                filepath = os.path.join(output_folder, f"{base_filename}.{fmt}")
+                if os.path.exists(filepath):
+                    os.remove(filepath)
 
     for psrio_case in psrio_cases_list.get_cases():
         psrio_case.run_psrio_commands()
