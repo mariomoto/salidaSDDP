@@ -5,6 +5,9 @@ from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT, parse_formats
 from utils import my_print
 
 
+VALID_LEVELS = set("YMDHBSX")
+
+
 class PSRIOCommand:
     def __init__(
         self,
@@ -28,6 +31,13 @@ class PSRIOCommand:
         self.agents = agents
         self.local_agents = agents
         self.dict_psrio_objects = dict()
+
+        invalid_chars = set(self.levels) - VALID_LEVELS
+        if invalid_chars:
+            raise ValueError(
+                f"Invalid level characters {invalid_chars} in levels='{self.levels}'. "
+                f"Valid characters are: {sorted(VALID_LEVELS)}"
+            )
 
     def __repr__(self):
         return f"PSRIOCommand(command={self.command}, levels={self.levels}, spawn={self.spawn}, file={self.file}, agents={self.agents})"

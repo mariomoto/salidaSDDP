@@ -90,7 +90,7 @@ Produces `dist/main.exe` (one-file PyInstaller bundle with `psr.factory` binarie
 - **Windows-only**: Uses `ctypes.windll` for short-path conversion and MessageBox dialogs.
 - **Paths must be absolute** in both CSV command files; validated at parse time.
 - **PSR Cloud polling**: 60s sleep loop with 30-min status log interval; no configurable timeout.
-- **Threading**: Cloud runs (`Run`/`RunDownload`) execute in threads but share a single `psr.cloud.Client`; `Download` runs sequentially on the main thread.
+- **Threading**: All cloud commands (`Run`, `Download`, `RunDownload`) execute in threads sharing a single `psr.cloud.Client`.
 - **Hardcoded passkey path**: `C:\PSR\passkey.txt`.
 - **Latin-1 encoding** assumed for CSV command files.
 - **No CLI arguments**: All configuration is via the CSV files in the selected folder.
@@ -98,8 +98,9 @@ Produces `dist/main.exe` (one-file PyInstaller bundle with `psr.factory` binarie
 
 ## Pending / Inferred TODOs
 
-1. **`test0.ipynb`** — Exploratory notebook present but not integrated into any test suite.
-2. **No automated tests** — Should add a `pytest` test suite under `tests/`.
-3. **`Download` command runs on main thread** — Should be threaded like `Run`/`RunDownload`.
-4. **MRU history file** — `load_history()` should prune entries pointing to non-existent directories.
-5. **`get_bus_agents` silent empty mapping** — If a generator has no bus mapping (returns `None`), `gen_bus_dict` won't have the key; `get_bus_agents` will `KeyError` on those agents.
+1. **`test.ipynb` / `test0.ipynb`** — Exploratory notebooks present but not integrated into any test suite.
+2. ~~**No automated tests**~~ — Basic `pytest` test suite added under `tests/`.
+3. ~~**`Download` command runs on main thread**~~ — Now threaded like `Run`/`RunDownload`.
+4. ~~**MRU history file**~~ — `load_history()` now prunes entries pointing to non-existent directories.
+5. ~~**`get_bus_agents` silent empty mapping**~~ — `get_bus_agents` now skips plants without a bus mapping.
+6. ~~**`levels` field parsing**~~ — Validation added; invalid characters now raise `ValueError`.
