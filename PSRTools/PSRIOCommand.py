@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import reprlib
 import psr.factory
 from PSRTools.Parameters import DICT_PSRFILE_PSRIOOBJECT, parse_formats
 from utils import my_print
@@ -68,21 +69,44 @@ class PSRIOCommand:
         load_options.set("FilterAgents", agents_list)
 
         dataframe_pathname = os.path.join(self.pathname, self.file + ".hdr")
+        short_pathname = os.path.join("...", os.path.basename(os.path.normpath(self.original_path)), self.file + ".hdr")
+        filter_failed = False
         try:
             df_f_agents = psr.factory.load_dataframe(
                 dataframe_pathname,
                 options=load_options,
             )
         except psr.factory.api.FactoryException as e:
-            original_dataframe_pathname = os.path.join(self.original_path, self.file + ".hdr")
-            error_msg = str(e).replace(dataframe_pathname, original_dataframe_pathname)
-            my_print(f"PSRIOCommand.bin_to_parquet: {error_msg}")
-            print(self)
-            raise RuntimeError(
-                f"Failed to load dataframe from '{original_dataframe_pathname}': {error_msg}"
-            ) from e
+            # The filter fails if any requested agent is absent from the file: reload unfiltered.
+            error_msg = str(e).replace(dataframe_pathname, short_pathname)
+            my_print(f"PSRIOCommand.bin_to_parquet: {error_msg} Retrying without agent filter.")
+            filter_failed = True
+            try:
+                df_f_agents = psr.factory.load_dataframe(dataframe_pathname)
+            except psr.factory.api.FactoryException as e2:
+                error_msg = str(e2).replace(dataframe_pathname, short_pathname)
+                my_print(f"PSRIOCommand.bin_to_parquet: {error_msg}")
+                print(self)
+                raise RuntimeError(
+                    f"Failed to load dataframe from '{short_pathname}': {error_msg}"
+                ) from e2
 
         df_p_agents = df_f_agents.to_pandas()
+
+        if filter_failed:
+            df_p_agents.columns = [str(name).strip() for name in df_p_agents.columns]
+            requested = [agent.strip() for agent in agents_list if agent.strip()]
+            present = [agent for agent in requested if agent in df_p_agents.columns]
+            missing = [agent for agent in requested if agent not in df_p_agents.columns]
+            if missing:
+                my_print(
+                    f"PSRIOCommand.bin_to_parquet: {len(missing)} agents not found in '{short_pathname}', ignored: {reprlib.repr(missing)}"
+                )
+            if not present:
+                raise RuntimeError(
+                    f"None of the requested agents found in '{short_pathname}'."
+                )
+            df_p_agents = df_p_agents[list(dict.fromkeys(present))]
 
         df_p_agents.columns = [
             self.dict_psrio_objects[name] for name in df_p_agents.columns.tolist()
